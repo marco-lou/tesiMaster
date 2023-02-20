@@ -657,7 +657,6 @@
     d3.csv("https://github.com/marco-lou/tesiMaster/tree/main/csvData/Tracciabilita.csv", function(rows) {
 
         data=rows;
-
         Timestamps = d3.nest()
         .key(function(d) { return d.Timestamp; }) //groupby keyword Timestamp
         .entries(data); //Return Value: It returns an array containing the property names and values of the specified object.
