@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="libraries/d3.js"></script>
+    <!--script src="libraries/d3.v3.min.js"></script  -->
+    <style>
+   body{
+        font-family:sans-serif;
+    }
+    .axis path, line{
+        stroke:black;
+    }
+    .timeseries path{
+        stroke-width:3px;
+    }
+    .timeseries circle{
+        stroke: white;
+    }
+    .timeseries text{
+        fill: white;
+        stroke: none;
+        font-size:12px;
+        font-weight: bold;
+    }
+    .line {
+        float:left;
+    }
+    .line_container{
+        width: 150px;
+        height: 20px;
+    }
+    path{
+        fill: none;
+    }
+    .key{
+        float:right;
+    }
+    .key_line{
+        font-size:17px;
+        width:100%;
+    }
+    .key_square{
+        height:10px;
+        width:10px;
+        outline:solid 1px black;
+        float:left;
+        margin-right:10px;
+        margin-top:6px;
+        margin-left:10px;
+    }
+    #timeseries{
+        padding: 100px 0px 0px 20px; /* top, right , bottom, left*/
+    
+        float:left;
+    }
+    #key{
+        padding: 20px 0px 0px 0px;
+    }
+    .node{
+        text-align: left;
+    }
+    #selectTimeBtn{
+        height:20px;
+        margin-top:80px;
+    }
+
+    .axis text {
+        font: 10px sans-serif;
+        }
+
+    .axis path,.axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+        }
+
+    .bar {
+        fill: steelblue;
+        fill-opacity: .9;
+        }
+
+    .x.axis path {
+        display: none;
+        }
+
+    label {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        }
+    </style>
+    <!--link rel="stylesheet" type="text/css" href="main_colours.css" /-->
+    <script>
+    
+    var time_scale, quantity;
+    var baseData;
+    var monthsTime, daysTime, yearsTime;
+    var monthModels,dayModels,yearModels;
+    var monthsData, daysData, yearsData; 
+    var monthsDataFlag, daysDataFlag, yearsDataFlag;
+    var idChecked, removedCheckBox;
+    var stocks, Timestamps, svg;
+    var contModels ,modelsName , model ;
+    var minYear, maxYear, minMonth, maxMonth;
+    var minDate, maxDate ;
+    var yearMinPieces, yearMaxPieces, monthMinPieces, monthMaxPieces, dayMinPieces, dayMaxPieces;
+    var last_circle , lineToShow;
+    var selectionValue;
+    var time_axis, count_axis;
+    var nonLinear_Date_Flag;
+    var zoomX,zoomY, scale;
+
+    //model = "null";
+    scale = 1;
+    zoomX = 0;
+    zoomY = 0;
+    nonLinear_Date_Flag = "months";
+    monthsDataFlag=true;
+    daysDataFlag = false;
+    yearsDataFlag = false;
+    selectionValue = [];
+    idChecked = [];
+    removedCheckBox = [];
+    lineToShow = 0;
+    baseData = [];
+    monthsData = [];
+    daysData=[];
+    yearsData=[];
+    contModels = 0;
+    modelsName = [];
+    monthModels = []; 
+    dayModels = []; 
+    yearModels = []; 
+    minYear = 0;
+    maxYear = 0;
+    minMonth = 0;
+    maxMonth = 0;
+    yearMinPieces = 10000000; 
+    monthMinPieces = 10000000;
+    dayMinPieces = 1000000;
+    yearMaxPieces = 0;
+    monthMaxPieces = 0;
+    dayMaxPieces = 0;
+    
+    var color= d3.scaleOrdinal(d3.schemeCategory20);
+    var sizeSquare = 20;
+   
+    
+    var x=d3.scaleLinear()
+		.range([0,100]);
+
+    var data=[];
+    d3.csv("/csvData/Tracciabilita.csv", function(rows) {
+
+        data=rows;
+
+        Timestamps = d3.nest()
+        .key(function(d) { return d.Timestamp; }) //groupby keyword Timestamp
+        .entries(data); //Return Value: It returns an array containing the property names and values of the specified object.
+
+        //d3.js foreach loop on all the paths contained in a svg
+        var rows = 0;
+        
+        Timestamps.forEach(function(s) {
+            s.values.forEach(function(d) { //d stay for every rows
+                if( rows < 80 ){
+                    //console.log("ItemID: " + d.ItemID)
+                    // timeStamps
+                    var tmp =d.Timestamp.split(" ");
+                    var data = tmp[0].split("/");
+                    var month = parseInt(data[0])
+                    var day = parseInt(data[1])
+                    var year = parseInt(data[2])
+                    var model = d.Model;
+                    model = model.replace( /\s/g, '') 
+                    //console.log( "remove spaces: " +model  + " ."); 
+
+                    //console.log("year, month: " + year + " " + month)
+                     //new Date(year, month, day, hours, minutes, seconds, milliseconds); 
+                    monthsTime = new Date( year, month -1, 1 , 5 ,0,0).getTime()
+                    daysTime = new Date(year, month-1 , day , 5, 0 ,0).getTime()
+                    yearsTime = new Date(year, 0, 1, 5, 0, 0).getTime()
+                    
+                    if(minMonth == 0 && maxMonth == 0 && minYear == 0 && maxYear ==0){
+                        /*console.log(d.Timestamp, ",it's: "+typeof(d.Timestamp))
+                        console.log("data tmp: " + tmp )
+                        console.log("data: " +data)
+                        console.log(minMonth,maxMonth,minYear,maxYear )*/
+                        minMonth = maxMonth = month
+                        minYear = maxYear = year
+                    }
+                    if(year > maxYear) {
+                        maxYear = year
+                    }else if(year < minYear){
+                        minYear = year
+                    }
+                    if(month > maxMonth) {
+                        maxMonth = month
+                    }else if ( month < minMonth){
+                        minMonth = month
+                    }
+                
+                    //end timeStamp
+
+                    //quantity scan 
+                    var currentModel = model; //model name
+
+                
+                    var phase = d.Phase;
+                    //console.log(currentModel + ",current model is: " + typeof(currentModel))
+                    //console.log(phase + ", it's: " + typeof(phase))
+                    //console.log("previous model: "+model)
+                    // console.log("current month: " + month)
+                    if(phase == "Testing"){
+                        var monthFinded = false 
+                        var dayFinded = false 
+                        var yearFinded = false 
+                        // TO DO... if currentModel it's into modelName =  modelNames.includes(currenModel)
+                        if(modelsName.includes(currentModel) ){   
+                            const indexOfModel = modelsName.indexOf(currentModel)
+                            //update months quantity 
+                            for( i of monthModels[indexOfModel].data){ // i= obj base data
+                                if(monthsTime === i.time){
+                                    i.count++
+                                    monthFinded= true
+                                }
+                            }
+                            //update day quantity
+                            for( i of dayModels[indexOfModel].data){ // i= obj base data
+                                if(daysTime === i.time){
+                                    i.count++
+                                    dayFinded= true
+                                }
+                            }
+                            for( i of yearModels[indexOfModel].data){ // i= obj base data
+                                if(yearsTime === i.time){
+                                    i.count++
+                                    yearFinded= true
+                                }
+                            }
+                            if(!monthFinded){
+                                monthModels[indexOfModel].data.push({
+                                                line_id: "Line_"+currentModel,
+                                                itemId: d.ItemID,
+                                                line_name: currentModel + " Line",
+                                                time: monthsTime,
+                                                final:false,
+                                                count: 1
+                                            })    
+                            }
+                            if(!dayFinded){
+                                dayModels[indexOfModel].data.push({
+                                                line_id: "Line_"+currentModel,
+                                                itemId: d.ItemID,
+                                                line_name: currentModel + " Line",
+                                                time: daysTime,
+                                                final:false,
+                                                count: 1
+                                            })    
+                            }
+                            if(!yearFinded){
+                                yearModels[indexOfModel].data.push({
+                                                line_id: "Line_"+currentModel,
+                                                itemId: d.ItemID,
+                                                line_name: currentModel + " Line",
+                                                time: yearsTime,
+                                                final:false,
+                                                count: 1
+                                            })    
+                            }
+                        }else{  //create new monthMember
+                            
+                            modelsName.push(currentModel)
+                            if(yearMaxPieces == 0){ 
+                                //console.log("yearMaxPieces first time")
+                                yearMaxPieces = 1
+                                monthMaxPieces = 1
+                                dayMaxPieces = 1
+                            }
+
+                            //model = currentModel
+                            var monthMember = {
+                                model: currentModel,
+                                data:[{
+                                    line_id: "Line_"+currentModel,
+                                    itemId: d.ItemID,
+                                    line_name: currentModel + " Line",
+                                    time: monthsTime,
+                                    final: false,
+                                    count: 1
+                                }]
+                            }
+                            var dayMember = {
+                                model: currentModel,
+                                data:[{
+                                    line_id: "Line_"+currentModel,
+                                    itemId: d.ItemID,
+                                    line_name: currentModel + " Line",
+                                    time: daysTime,
+                                    final: false,
+                                    count: 1
+                                }]
+                            }
+                            var yearMember = {
+                                model: currentModel,
+                                data:[{
+                                    line_id: "Line_"+currentModel,
+                                    itemId: d.ItemID,
+                                    line_name: currentModel + " Line",
+                                    time: yearsTime,
+                                    final: false,
+                                    count: 1
+                                }]
+                            }
+
+                            console.log("monthMember data: "+monthMember.data[0].line_id)
+                            
+                            baseData.push(monthMember.data[0]) //need just line_name than not have to change
+                            
+                            //add object into array
+                            monthModels.push(monthMember)
+                            dayModels.push(dayMember)
+                            yearModels.push(yearMember)
+                            
+                            //update the new model
+                            contModels++
+                            
+                        }   
+                    }
+                }
+                
+                rows++;
+            });
+            
+        });
+        var yearCount = 0
+        var monthCount = 0
+        var dayCount = 0
+
+        for( object of dayModels){
+            //console.log(object)
+            for ( arrays of object.data){
+                dayCount++
+                daysData.push(arrays)
+                var value = arrays.count
+                if(value != 0 && value < dayMinPieces) dayMinPieces = value
+                if(value != 0 && value > dayMaxPieces) dayMaxPieces = value
+            }
+        }      
+        for( object of yearModels){
+            //console.log(object)
+            for ( arrays of object.data){
+                yearCount++
+                yearsData.push(arrays)
+                var value = arrays.count
+                if(value != 0 && value < yearMinPieces) yearMinPieces = value
+                if(value != 0 && value > yearMaxPieces) yearMaxPieces = value
+            }
+        }       
+                    
+        // detect min and max quantity of production
+        for( object of monthModels){
+            //console.log(object)
+            for ( arrays of object.data){
+                monthCount++
+                monthsData.push(arrays)
+                var value = arrays.count
+                if(value != 0 && value < monthMinPieces) monthMinPieces = value
+                if(value != 0 && value > monthMaxPieces) monthMaxPieces = value
+            }
+        }
+        console.log("line to show: " + lineToShow)
+        //console.log("conta: " + conta)
+        //console.log("main data obj: "+ monthsData)
+        // Sort by maximum price, descending.
+        //Timestamps.sort(function(a, b) { return b.maxPrice - a.maxPrice; });
+
+        
+        for( i of baseData){
+            idChecked.push("CheckBox_"+ i.line_id)
+        }
+
+        yearMinPieces--
+        yearMaxPieces++
+        monthMinPieces--
+        monthMaxPieces++
+        dayMinPieces--
+        dayMaxPieces++
+
+        
+
+        console.log("monthModels:" )
+        console.log(monthModels)
+        console.log("dayModels:")
+        console.log(dayModels)
+        console.log("yearModels:")
+        console.log(yearModels)
+        console.log("yearMinPieces, yearMaxPieces: " + yearMinPieces , yearMaxPieces )
+        console.log("minMonth, maxMonth, minYear, maxYear: " + minMonth,maxMonth,minYear,maxYear )
+        if(minMonth === 1){
+            minMonth = 12
+            minYear--
+        }
+        // will show month +1 than minMonth-1
+        minDate = new Date(minYear, minMonth -1, 1 , 5 ,0,0)  //new Date(year, month, day,
+                                          //hours, minutes, seconds, milliseconds); 
+        maxDate = new Date(maxYear, maxMonth , 1 , 5 ,0,0) // will show month +1
+        
+        console.log("modelsName: " + modelsName)
+    }); 
+
+   
+    function get_timeseries_data(d,i){
+        // get the id of the current element
+        //console.log("ddd: "+d.line_id )
+        
+
+        var id = d.line_id
+        //console.log("get id : " + id)
+       
+        var ts = d3.select('#'+id)
+        //console.log("main data: " + monthsData)
+        if (ts.empty()){
+            //console.log(lineToShow)
+            if( monthsDataFlag){
+                filtered_data = monthsData.filter(function(d){
+                    return d.line_id === id}
+                )
+            }else if ( daysDataFlag){
+                filtered_data = daysData.filter(function(d){
+                    return d.line_id === id}
+                )
+            }else{
+                filtered_data = yearsData.filter(function(d){
+                    return d.line_id === id}
+                )
+            }
+            //console.log("filtered data: "+ filtered_data)
+            
+            filtered_data[filtered_data.length-1].final=true
+            //console.log("filtered final data " + filtered_data[filtered_data.length-1].final)
+            /*for ( i of filtered_data)
+                console.log(i)*/
+            /*
+            for ( i  of filtered_data)
+                console.log("filtered data: "+ i.line_name +" = " +id)
+            */
+            //draw on the screen
+            draw_timeseries(filtered_data, id)
+        } else {
+            console.log("remove")
+                ts.remove()
+        }
+    }
+    
+    function add_label(circle, d){
+        //final circle label
+        d3.select(circle)
+            .transition()
+            .attr('r', 12)
+            .style("fill", function(d) { return color(d.line_id); });
+
+        //text in final circle
+        d3.select('#' + d.line_id).append('text')
+            .text(d.line_id.split('_')[1].slice(0,3))
+            .attr('text-anchor','middle')
+            .style("dominant-baseline","central")
+            .attr('x', time_scale(d.time))
+            .attr('y', quantity(d.count))
+            .attr('class','linelabel')
+            .style('opacity',0)
+            .style('fill','white')
+            .transition()
+                .style('opacity',1)        
+    }
+   
+    
+    function draw_timeseries(data, id){ // id pressed , data = filtered data
+        //console.log("draw data: " + data)
+        //sblocca select all checkBox
+        //get parameters of lines
+        var line = d3.line()
+            .x(function(d){return time_scale(d.time )})
+            .y(function(d){return quantity(d.count)})
+            .curve(d3.curveLinear)
+
+        
+        //create chart
+        var g = d3.select('#chart')
+            .append('g')
+            .attr('id', id)
+            .attr('class', 'timeseries')
+            .attr("transform", "translate("+zoomX+","+zoomY+") scale(" + scale +" )");
+
+       g.append('path')
+            .attr('d', line(data))
+            .attr("stroke",color(data[0].line_id)) //take color id
+    
+        //pass circle parameters
+        g.selectAll('circle')
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr('cx', function(d) {return time_scale(d.time )})
+            .attr('cy', function(d) {return quantity(d.count )})
+            .attr('r',0)
+            .style("fill", function(d) { return color(d.line_id); });
+                
+        var enter_duration = 1;
+
+        //draw circles 
+        g.selectAll('circle')
+            .transition()
+            .delay(function(d, i) { return i / data.length * enter_duration; })
+            .attr('r', 5)
+            .on('end',function(d,i){
+                if (i === data.length-1){
+                    add_label(this,d)  //add labels to the circles
+                }
+            })
+            
+        //mouse handler: increase/decrease  the size of cicle  and lines
+        g.selectAll('circle')
+            .on('mouseover', function(d){
+               
+                if(!d.final){
+                    d3.select(this)
+                    .transition().attr('r', 9)
+                }else{
+                    d3.select(this)
+                    .transition().attr('r', 15)
+                }  
+                draw_noncontinuesLine(d.time, d.count , id+"nonContinues")
+            })
+            .on('mouseout', function(d,i){
+                if(!d.final){
+                    if (i !== data.length-1) {
+                        d3.select(this).transition().attr('r', 5)
+                    }
+                }else{
+                        d3.select(this).transition().attr('r', 12)
+                }
+                remove_noncontinuesLine(d.time, d.count  , id+"nonContinues")
+            })
+        
+        //mouse handler: show quantity and date
+        g.selectAll('circle')
+            .on('mouseover.tooltip', function(d){
+                var datePos;
+                if(nonLinear_Date_Flag == "months"){
+                    datePos = -0.4 * 2
+                }else if(nonLinear_Date_Flag == "days"){
+                    datePos = -0.18 * 2
+                }else{ //year case
+                    datePos = -1 * 2
+                }
+                d3.select("text." + d.line_id).remove()
+                //draw units
+                d3.select('#chart')
+                    .append('text')
+                    .text(d.count)
+                    .attr('x', time_scale(minDate-800000000 *3) )
+                    .attr('y', quantity(d.count) +5)
+                    .attr('class', d.line_id)
+                    .attr("fill","green")
+                    .attr("transform", "translate("+zoomX+","+zoomY+") scale(" + scale +" )")
+                //draw date 
+                d3.select('#chart')
+                    .append('text')
+                    .text( new Date(d.time).toLocaleDateString())
+                    .attr('x', time_scale(d.time))
+                    .attr('y', quantity(datePos))
+                    .attr('class', "date_"+d.line_id)
+                    .attr("fill","green")
+                    .attr("transform", "translate("+zoomX+","+zoomY+") scale(" + scale +" )")
+            })
+            .on('mouseout.tooltip', function(d){
+                d3.select("text." + d.line_id)
+                    .transition()
+                    .duration(500)
+                    .style('opacity',0)
+                    .attr('transform','translate(10, -10)')
+                    .remove()
+                    
+                d3.select("text." + "date_"+d.line_id)
+                    .transition()
+                    .duration(1)
+                    .style('opacity',0)
+                    .attr('transform','translate(10, -10)')
+                    .remove()
+            })
+
+           
+       
+    }
+    function draw_noncontinuesLine(time , units, id){
+        var data =[] 
+        var unitsData = []
+        
+        for( j =time - 864000000 ; j >= minDate.getTime() -864000000 - zoomX; j =j-864000000 ){
+            data.push(j)
+        }
+        /*
+        var Y_zoomed_0 = parseFloat(d3.select(".y_axis").selectAll(".tick").select("#Y_axisText_0").text())
+        var Y_zoomed_1 = parseFloat(d3.select(".y_axis").selectAll(".tick").select("#Y_axisText_1").text())
+        var Y_diff = (Y_zoomed_1 - Y_zoomed_0).toFixed(1)
+        
+        
+        console.log("Y_zoomed_0: " + Y_zoomed_0 +" tipe: " + typeof(Y_zoomed_0))
+        console.log("Y_zoomed_1: " + Y_zoomed_1 +" tipe: " + typeof(Y_zoomed_1))
+        console.log("diff: " + Y_diff)
+         */
+        //rescale units "quantity" axis
+        if(nonLinear_Date_Flag == "months"){
+            for( i = units- 0.5; i >= 0 ; i = i -  0.5){ //i = i-0.5 - scale
+                    unitsData.push(i)
+                }
+            /*
+            if(Y_diff == 1){
+                for( i = units- 0.5; i >= Y_zoomed_0 ; i = i -  0.5){ //i = i-0.5 - scale
+                    unitsData.push(i)
+                }
+            }else if(Y_diff > 0.3){
+                for( i = units - Y_diff; i >= Y_zoomed_0 ; i = i -  Y_diff){ //i = i-0.5 - scale
+                    unitsData.push(i)
+                }
+            }else{
+                for( i = units - Y_diff -0.2; i >= Y_zoomed_0 ; i = i -  Y_diff-0.2){ //i = i-0.5 - scale
+                    unitsData.push(i)
+                }
+            }*/
+        }else if(nonLinear_Date_Flag == "days"){
+            /*
+            if(Y_diff == 1){
+                for( i = units- 0.5; i >= Y_zoomed_0 ; i = i -  0.5){ //i = i-0.5 - scale
+                    unitsData.push(i)
+                }
+            }else if(Y_diff > 0.3){
+                for( i = units - Y_diff; i >= Y_zoomed_0 ; i = i -  Y_diff){ //i = i-0.5 - scale
+                    unitsData.push(i)
+                }
+            }else{
+                for( i = units - Y_diff -0.2; i >= Y_zoomed_0 ; i = i -  Y_diff-0.2){ //i = i-0.5 - scale
+                    unitsData.push(i)
+                }
+            }
+            */
+        }else{ //years case
+            /*
+            if(Y_diff == 1){
+                for( i = units- 0.5; i >= Y_zoomed_0 ; i = i -  0.5){ //i = i-0.5 - scale
+                    unitsData.push(i)
+                }
+            }else if(Y_diff > 0.3){
+                for( i = units - Y_diff; i >= Y_zoomed_0 ; i = i -  Y_diff){ //i = i-0.5 - scale
+                    unitsData.push(i)
+                }
+            }else{
+                for( i = units - Y_diff -0.2; i >= Y_zoomed_0 ; i = i -  Y_diff-0.2){ //i = i-0.5 - scale
+                    unitsData.push(i)
+                }
+            }*/
+        }
+        //draw units lines -> verticale
+        var gTime = d3.select('#chart')
+            .append('g')
+            .attr('id', id)
+            .attr('class', 'timeseries ' + id)
+            .attr("transform", "translate("+zoomX+","+zoomY+") scale(" + scale +" )");
+
+        gTime.selectAll('circle')
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr('cx', function(d) {return time_scale(d)})
+            .attr('cy', quantity(units))
+            .attr('r',5)
+
+        //draw date lines -> orrizontale
+        var gUnits = d3.select('#chart')
+            .append('g')
+            .attr('id', id+"_units")
+            .attr('class', 'timeseries ' + id+"_units")
+            .attr("transform", "translate("+zoomX+","+zoomY+") scale(" + scale +" )");
+
+    
+        gUnits.selectAll('circle')
+            .data(unitsData)
+            .enter()
+            .append("circle")
+            .attr('cx', time_scale(time))
+            .attr('cy', function(d) {return quantity(d)}) 
+            .attr('r',5)
+           
+        
+    }
+
+    function remove_noncontinuesLine(time , units, id){
+        
+        var g = d3.select('#chart')
+            .selectAll("#"+id)
+            .data([])
+            .exit()
+            .remove()
+
+        var g = d3.select('#chart')
+            .selectAll("#"+id+"_units")
+            .data([])
+            .exit()
+            .remove()
+        console.log("id : " +id)
+
+        d3.selectAll("#"+id)
+            .attr("r",function(d,i){ return d});
+        d3.selectAll("#"+id+"_units")
+            .attr("r",function(d,i){ return d});
+            
+    }
+
+    function draw() {
+        "use strict";
+        console.log("init draw"  ) 
+        // set up the viewport, the scales, and axis generators
+        
+        var container_dimensions = {width:1200, height: 500},
+            margins = {top: 10, right: 20, bottom: 30, left: 60},
+            chart_dimensions = { // positions of 
+                width: container_dimensions.width - margins.left - margins.right+5,
+                height: container_dimensions.height - margins.top - margins.bottom -10
+            };
+        console.log("min date: " + minDate ) 
+        console.log( "max Date" + maxDate) 
+        /*
+        console.log("get time now : " + minDate.getTime()) 
+        console.log("epoch time: "+Math.floor(minDate.getTime()/1000.0))
+        */
+        //zoom
+        var zoom = d3.zoom()
+          .scaleExtent([1, 10])
+          .on("zoom", zoomed)
+          .on("end", function(){console.log("finish zoom")});
+
+        function filter(event) {
+            event.preventDefault();
+            return (!event.ctrlKey || event.type === 'wheel') && !event.button;
+        }
+        function zoomed() {
+            zoomX = d3.event.transform.x
+            zoomY = d3.event.transform.y
+            scale = d3.event.transform.k
+            
+            d3.selectAll('.timeseries').attr("transform", "translate(" + d3.event.transform.x + "," + d3.event.transform.y + ") scale(" + d3.event.transform.k + ")");
+            gX.call(time_axis.scale(d3.event.transform.rescaleX(time_scale)));
+            gY.call(count_axis.scale(d3.event.transform.rescaleY(quantity)));
+
+            d3.select(".x_axis").selectAll("text").attr("id", function(d,i) {return "X_axisText_" + i});
+            d3.select(".y_axis").selectAll("text").attr("id", function(d,i) {return "Y_axisText_" + i});
+        }
+        function dragged() {
+            var x = d3.event.x; // Get current x position
+            var y = d3.event.y; // Get current y position
+            console.log("sono: " +x)
+  		    d3.select(this)
+                .attr("transform", "translate(" + x + "," + y + ")");
+        }
+        //setup axis
+        time_scale = d3.scaleTime()
+            .range([0,  chart_dimensions.width])
+            .domain([ minDate.getTime() , maxDate.getTime()])
+            //.domain([new Date(2019, 11, 1), new Date(2022, maxMonth, 1)]);
+            //.domain([1575000000000, 1672534000000]);
+
+        quantity = d3.scaleLinear()
+            .range([chart_dimensions.height, 0])
+            .domain([monthMinPieces , monthMaxPieces]);
+        
+        //position of lines
+        time_axis = d3.axisBottom(time_scale) //x
+            
+        count_axis = d3.axisLeft(quantity)    //y
+        
+        //add options to selectionTimeBtn
+        selectionValue = ["Months" , "Days", "Years"]
+
+        d3.select("#selectTimeBtn")
+            .selectAll('myOptions')
+     	    .data(selectionValue)
+            .enter()
+    	    .append('option')
+                .text(function (d) { return d; }) // text showed in the menu
+                .attr("value", function (d) { return d; }) // corresponding value returned by the button
+
+        // draw axis
+        
+        var g = d3.select('#timeseries')
+          .append('svg')
+            .attr("width", container_dimensions.width)
+            .attr("height", container_dimensions.height)
+            .call(zoom)
+            //.call(zoom)
+          .append("g")
+            .attr("transform", "translate(" + margins.left + "," + margins.top + ")")
+            .attr("id","chart");
+        //gX, gY -> zooming needed 
+        var gX  = g.append("g")
+          .attr("class", "x_axis")
+          .attr("transform", "translate(0," + chart_dimensions.height+ ")")
+          .call(time_axis);
+         
+        var gY = g.append("g")
+          .attr("class", "y_axis")
+          .call(count_axis);
+        
+        //draw the keys
+        var key_items = d3.select('#key')
+          .selectAll('div')
+          .data(baseData)
+          .enter() 
+          .append('div')
+            .attr('class','key_line') //label clicke
+            .attr('id',function(d){
+                //console.log("position as id: "+"Line_" + d +"_key")
+                return d.line_id +"_key"})
+              
+        var key_items1 = d3.select('#key')
+          .append("div")
+            .attr('class','key_line_all') //label clicle
+            .attr('id',"Line_All")
+        //assign id to min units and date  
+        //d3.select(".x_axis").selectAll("text").attr("id", function(d,i) {return "X_axisText_" + i});
+        //d3.select(".y_axis").selectAll("text").attr("id", function(d,i) {return "Y_axisText_" + i});
+
+        
+        //draw all lines at start
+        for(i in baseData)
+                get_timeseries_data(baseData[i])
+
+        d3.select("#selectTimeBtn").on("change", function(event,d) {
+        // recover the option that has been chosen
+            
+            const selectedOption = d3.select(this).property("value")
+            console.log("event: " + selectedOption)
+            if(selectedOption === "Days"){
+                nonLinear_Date_Flag = "days"
+                quantity = d3.scaleLinear()
+                    .range([chart_dimensions.height, 0])
+                    .domain([dayMinPieces , dayMaxPieces]);
+                count_axis = d3.axisLeft(quantity)
+
+                g.select(".y_axis")
+                    .remove()
+
+                g.append("g")
+                    .attr("class", "y_axis")
+                    .call(count_axis);
+                
+                daysDataFlag = true
+                monthsDataFlag = false
+                yearsDataFlag = false
+            }else if (selectedOption === "Years"){
+
+                nonLinear_Date_Flag = "years"
+                
+                quantity = d3.scaleLinear()
+                    .range([chart_dimensions.height, 0])
+                    .domain([yearMinPieces , yearMaxPieces]);
+                count_axis = d3.axisLeft(quantity)
+
+                g.select(".y_axis")
+                    .remove()
+
+                g.append("g")
+                    .attr("class", "y_axis")
+                    .call(count_axis);
+                
+                daysDataFlag = false
+                monthsDataFlag = false
+                yearsDataFlag = true
+            }else{
+                nonLinear_Date_Flag = "months"
+
+                quantity = d3.scaleLinear()
+                    .range([chart_dimensions.height, 0])
+                    .domain([monthMinPieces , monthMaxPieces]);
+                count_axis = d3.axisLeft(quantity)
+                
+                g.select(".y_axis")
+                    .remove()
+
+                g.append("g")
+                    .attr("class", "y_axis")
+                    .call(count_axis);
+                daysDataFlag = false
+                monthsDataFlag = true
+                yearsDataFlag = false
+            }
+            // run the updateChart function with this selected option
+            update(selectedOption)
+        })
+
+        function update(selectedGroup) {
+            
+            //delete current 
+            for( i in baseData)
+                get_timeseries_data(baseData[i])
+
+            if(selectedGroup == "Days"){
+                for( i in baseData)
+                    get_timeseries_data(baseData[i])
+            }else if( selectedGroup === "Years"){
+                
+                for( i in baseData)
+                    get_timeseries_data(baseData[i])
+            }else{
+                for( i in baseData)
+                    get_timeseries_data(baseData[i])
+            }
+        }
+            
+
+
+        
+        //add check Box
+        key_items.append("input")
+            .attr('class', 'checkboxes')
+            .attr("checked", true)
+            .attr("type", "checkbox")
+            .attr("id", function(d,i) { //baseData id
+                return "CheckBox_"+baseData[i].line_id; }) 
+            .attr("for", function(d,i) { return d.line_name; })
+            //.text(function(d) { return d.line_name; })
+         
+        key_items1.append("input")
+            .attr('class', 'checkboxes')
+            .attr("checked", true)
+            .attr("disabled", true)
+            .attr("type", "checkbox")
+            .attr("id", "CheckBox_Line_All" ) 
+            //.text("Select All")
+        //labels 
+        key_items.append("text")
+            .attr('class','key_label')
+            .text(function(d){
+                return d.line_name})
+            .style("color", function(d) { return color(d.line_id);})
+
+        key_items1.append("text")
+            .attr('class','key_label_all')
+            .text("Select All")
+            .style("color", color("key_label_all"))
+            
+       
+        //containing checkbox to check
+        var checkingBox = baseData.length
+
+
+
+        //checkbox change
+        d3.selectAll('.checkboxes').on('change', 
+                
+            function(){ // add lines chart
+                //take data to add or to remove -> [{line_id: ....}]  
+                var j;
+                if(this.id!== "CheckBox_Line_All"){
+                    const currentId = this.id.slice(9)
+                    console.log("current id: " +currentId)
+                    var toAddRemove = baseData.filter(function(d){
+                        return d.line_id === currentId;
+                    })
+                    //console.log("id?: " + toRemove[0].line_id)
+                    for(i of toAddRemove)
+                        console.log("cosa ho : " + i.line_id)
+                }
+                
+                if(this.checked){
+                    console.log("checking: " + this.id)
+                    console.log("removedBox: " + removedCheckBox) 
+
+                    if(this.id !== "CheckBox_Line_All"){//not case CheckBox_Line_All
+                        
+                        //last checkbox uncheck
+                        if(checkingBox === 1){
+                            const lastBoxId = idChecked[0]
+                            d3.selectAll('#'+lastBoxId).property("disabled",false);
+                        }
+                        var indexToAdd = 0
+
+                        // remove elements from removedBox that is used when select all checkobox will selected
+                        
+                        for( i in removedCheckBox){
+                            if(this.id === "CheckBox_"+ removedCheckBox[i].line_id){
+                                console.log("trovato")
+                                delete removedCheckBox[indexToAdd];
+                                break
+                            }else{
+                                console.log ("CheckBox_"+removedCheckBox[i].line_id +" = "+ this.id )   
+                                indexToAdd++
+                            }
+                        }
+                        
+                       
+                       
+                        get_timeseries_data(toAddRemove[0]) 
+                        idChecked.push(this.id)
+                        
+                        checkingBox++
+                        console.log("checking count: " + checkingBox)
+
+                        //make true CheckBox_Line_All when all is checked
+                        if(checkingBox == baseData.length){
+                            d3.select('#CheckBox_Line_All').property("checked", true)
+                            d3.select("#CheckBox_Line_All").property("disabled",true)
+                        }
+                        setTimeout("",500)
+                    }else{ //blocca CheckBox_Line_All
+                        
+                        for( i of baseData){
+                            //reset isChecked flag
+                            idChecked.push("CheckBox_"+ i.line_id)
+                        }
+                        for( i in removedCheckBox)
+                            get_timeseries_data(removedCheckBox[i])
+                        d3.selectAll('.checkboxes').property("checked",true);
+                        d3.selectAll('.checkboxes').property("disabled",false);
+                        d3.select("#CheckBox_Line_All").property("disabled",true)
+                        removedCheckBox = [] //svuota
+                        
+                        checkingBox =baseData.length
+                        console.log("here: " + checkingBox)
+                    }
+                    
+                }else{// remove
+                    
+                    console.log("checking: " +this.id)
+                    
+                    if(checkingBox > 2){
+                        //make false CheckBox_Line_All when all is not checked
+                        if ( checkingBox === baseData.length ){
+                            d3.select("#CheckBox_Line_All").property("disabled", false)
+                            d3.select('#CheckBox_Line_All').property("checked", false)
+                        }
+                        removedCheckBox.push(toAddRemove[0])
+                        get_timeseries_data(toAddRemove[0])
+                        const index = idChecked.indexOf(this.id)
+                        idChecked.splice(index, 1); //elimina elemento
+                        checkingBox--
+                     
+
+                        console.log('You unchecked the checkbox: '+this.id)
+                        console.log(checkingBox)
+                    }else{
+                        removedCheckBox.push(toAddRemove[0])
+                        get_timeseries_data(toAddRemove[0])
+                        const index = idChecked.indexOf(this.id)
+                        idChecked.splice(index, 1);
+                        checkingBox--
+                        const lastBoxId = idChecked[0]
+                        console.log("last : " +lastBoxId)
+                        d3.selectAll('#'+lastBoxId).property("disabled",true);
+                    }
+                    
+                }
+            })
+
+            
+        
+    }
+    
+    </script>
+</head>
+<body>
+    
+    <div id='timeseries' align="center">
+        
+        <foreignobject class="node" x="20" y="22" width="10" height="200">
+                
+            <div >UNITS</div>                
+        </foreignobject>
+    </div>
+    <select id="selectTimeBtn"></select>
+    <div id="key" ></div> <!-- pressable label to show product trend-->
+    
+    <script>
+        
+        setTimeout(function() { d3.json('', draw) }, 500);
+            
+        
+    </script>
+</body>
+</html>
