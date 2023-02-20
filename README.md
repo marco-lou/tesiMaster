@@ -13,6 +13,6 @@ Browser Compatibility
 
 Start the use web application
 --------------
-play the game by clicking this link: 
-https://sapienzainteractivegraphicscourse.github.io/final-project-bosi-lou/
+play the app by clicking this link: 
+https://marco-lou.github.io/tesiMaster/
 
