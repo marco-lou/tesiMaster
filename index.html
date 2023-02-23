@@ -235,6 +235,24 @@
     </style>
     <!--link rel="stylesheet" type="text/css" href="main_colours.css" /-->
     <script>
+
+    var timeAverage = 0;
+
+    d3.text("/Simulation_2023-02-21_11-57-17/Scenario_1/lavabi_10dofc_1.txt",function(error,data){
+        if(error)
+            return console.error(error);
+
+        const myArray = data.split("\n");
+        console.log(myArray)
+        
+        for( i of myArray){
+            if(i.includes("Average acc process time: ")){
+                const tmp = i.split(": ") 
+                timeAverage = tmp[1]
+                console.log(tmp[1])
+            }
+        }
+    });
     var dataTop3;
     var top3Flag = false, barFlag= false;
     var svg

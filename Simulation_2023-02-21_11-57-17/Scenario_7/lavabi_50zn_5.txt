@@ -1,0 +1,113 @@
+10:53:54.286 [main] DEBUG com.qbpsimulator.engine.utils.RandomGenerator - Set seed 1623536266
+Running lavabi_50zn_5.bpmn
+10:53:54.293 [main] INFO com.qbpsimulator.engine.BPSimulator - Starting simulation. Seed: 1623536266
+10:53:54.294 [main] DEBUG com.qbpsimulator.engine.BPSimulator - Loading data
+10:53:54.895 [main] DEBUG com.qbpsimulator.engine.BPSimulator - Pre-processing model
+10:53:54.898 [main] DEBUG com.qbpsimulator.engine.BPSimulator - Initializing process instances
+10:53:54.939 [main] DEBUG com.qbpsimulator.engine.BPSimulator - Processing events
+10:53:55.110 [main] DEBUG com.qbpsimulator.engine.BPSimulator - Finalizing
+10:53:55.111 [main] DEBUG com.qbpsimulator.engine.utils.CSVStatsWriter - Saving to file: lavabi_50zn_5.csv
+10:53:55.147 [main] DEBUG com.qbpsimulator.engine.BPSimulator - Finished
+10:53:55.148 [main] INFO com.qbpsimulator.engine.BPSimulator - Simulation done
+Process instances: 666
+First process instance in stats: 1
+Last process instance in stats: 666
+Average acc process time: 8857.124602102096
+Minimum acc process time: 4517.65
+Maximum acc process time: 199083.5
+Average process cost: 35.7148411921088
+Minimum process cost: 35.71042841666667
+Maximum process cost: 35.71981563888889
+Average process waiting time: 4046.8118242988357
+Minimum process waiting time: 0.0
+Maximum process waiting time: 17740.196000099182
+Total cycle time: 5226550.51
+Average cycle time: 8857.12
+Minimum cycle time: 4517.65
+Maximum cycle time: 199083.5
+Average cycle time in timetable: 8564.98
+Minimum cycle time in timetable: 4517.65
+Maximum cycle time in timetable: 22258.22
+Simulation engine performance data:
+Enabled elements: 5994
+Started elements: 5994
+Completed elements: 5994
+Individual task statistics:
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+| Element                       | Avg Duration | Avg waiting time    | Avg Idle time  | Avg Cost  | Avg Cost over thresh| Avg Dur over thresho| Count     |
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+| COLAGGIO L50ZN                | 767.8        | 1.12                | n/a            | 5.9       | n/a                 | n/a                 | 666       |
+| COLLAUDO L50ZN                | 12.5         | n/a                 | n/a            | 0.09      | n/a                 | n/a                 | 666       |
+| COTTURA1 L50ZN                | 4045.47      | 1775.47             | n/a            | 18.13     | n/a                 | n/a                 | 666       |
+| COTTURA2 L50ZN                | 3710.22      | 2270.22             | n/a            | 11.5      | n/a                 | n/a                 | 666       |
+| Order Processed               | n/a          | n/a                 | n/a            | n/a       | n/a                 | n/a                 | 666       |
+| Order Received                | n/a          | n/a                 | n/a            | n/a       | n/a                 | n/a                 | 666       |
+| RIFINITURA L50ZN              | 14           | n/a                 | n/a            | n/a       | n/a                 | n/a                 | 666       |
+| SCELTA L50ZN                  | 3.5          | n/a                 | 292.14         | 0.02      | n/a                 | n/a                 | 666       |
+| SPRUZZO L50ZN                 | 11.5         | n/a                 | n/a            | 0.08      | n/a                 | n/a                 | 666       |
+------------------------------------------------------------------
+Resource utilizations:
+glazing_machine: 0%
+testing_machine: 0%
+casting_machine: 3%
+scelta_machine: 0%
+finishing_machine: 0%
+baking_machine: 24%
+System: 0%
+Duration distribution: 
+4517 - 23973: 665
+23974 - 43430: 0
+43431 - 62887: 0
+62888 - 82344: 0
+82345 - 101801: 0
+101802 - 121258: 0
+121259 - 140715: 0
+140716 - 160172: 0
+160173 - 179629: 0
+179630 - 199086: 1
+Waiting time distribution: 
+0 - 1774: 259
+1775 - 3549: 131
+3550 - 5324: 76
+5325 - 7099: 55
+7100 - 8874: 42
+8875 - 10649: 47
+10650 - 12424: 28
+12425 - 14199: 14
+14200 - 15974: 6
+15975 - 17749: 8
+Process cost distribution: 
+35 - 35: 666
+36 - 36: 0
+37 - 37: 0
+38 - 38: 0
+39 - 39: 0
+40 - 40: 0
+41 - 41: 0
+42 - 42: 0
+43 - 43: 0
+44 - 44: 0
+Cycle time distribution: 
+4517 - 23973: 665
+23974 - 43430: 0
+43431 - 62887: 0
+62888 - 82344: 0
+82345 - 101801: 0
+101802 - 121258: 0
+121259 - 140715: 0
+140716 - 160172: 0
+160173 - 179629: 0
+179630 - 199086: 1
+In timetable cycle time distribution: 
+4517 - 6291: 259
+6292 - 8066: 131
+8067 - 9841: 76
+9842 - 11616: 55
+11617 - 13391: 42
+13392 - 15166: 47
+15167 - 16941: 28
+16942 - 18716: 14
+18717 - 20491: 6
+20492 - 22266: 8
+Simulation started at: Fri Feb 22 22:42:00 UTC 2222
+Simulation ended at: Wed Apr 24 10:31:10 UTC 2222

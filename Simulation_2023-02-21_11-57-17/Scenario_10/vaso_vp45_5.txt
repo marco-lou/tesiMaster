@@ -1,0 +1,113 @@
+10:56:43.132 [main] DEBUG com.qbpsimulator.engine.utils.RandomGenerator - Set seed 974733366
+Running vaso_vp45_5.bpmn
+10:56:43.138 [main] INFO com.qbpsimulator.engine.BPSimulator - Starting simulation. Seed: 974733366
+10:56:43.138 [main] DEBUG com.qbpsimulator.engine.BPSimulator - Loading data
+10:56:43.874 [main] DEBUG com.qbpsimulator.engine.BPSimulator - Pre-processing model
+10:56:43.877 [main] DEBUG com.qbpsimulator.engine.BPSimulator - Initializing process instances
+10:56:43.887 [main] DEBUG com.qbpsimulator.engine.BPSimulator - Processing events
+10:56:43.936 [main] DEBUG com.qbpsimulator.engine.BPSimulator - Finalizing
+10:56:43.937 [main] DEBUG com.qbpsimulator.engine.utils.CSVStatsWriter - Saving to file: vaso_vp45_5.csv
+10:56:43.950 [main] DEBUG com.qbpsimulator.engine.BPSimulator - Finished
+10:56:43.950 [main] INFO com.qbpsimulator.engine.BPSimulator - Simulation done
+Process instances: 55
+First process instance in stats: 1
+Last process instance in stats: 55
+Average acc process time: 13552.579418181818
+Minimum acc process time: 6117.812
+Maximum acc process time: 199083.5
+Average process cost: 48.02601671515151
+Minimum process cost: 48.02288605555556
+Maximum process cost: 48.02918780555556
+Average process waiting time: 3925.937727217241
+Minimum process waiting time: 0.0
+Maximum process waiting time: 14135.387999534607
+Total cycle time: 479296.66
+Average cycle time: 13552.58
+Minimum cycle time: 6117.81
+Maximum cycle time: 199083.5
+Average cycle time in timetable: 10044.12
+Minimum cycle time in timetable: 6117.81
+Maximum cycle time in timetable: 20253.4
+Simulation engine performance data:
+Enabled elements: 495
+Started elements: 495
+Completed elements: 495
+Individual task statistics:
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+| Element                       | Avg Duration | Avg waiting time    | Avg Idle time  | Avg Cost  | Avg Cost over thresh| Avg Dur over thresho| Count     |
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+| COLAGGIO VtVP45               | 2366.68      | n/a                 | n/a            | 18.21     | n/a                 | n/a                 | 55        |
+| COLLAUDO VtVP45               | 12.5         | n/a                 | n/a            | 0.09      | n/a                 | n/a                 | 55        |
+| COTTURA1 VtVP45               | 3953.39      | 1683.39             | n/a            | 18.13     | n/a                 | n/a                 | 55        |
+| COTTURA2 VtVP45               | 3682.54      | 2242.54             | 0.02           | 11.5      | n/a                 | n/a                 | 55        |
+| Order Processed               | n/a          | n/a                 | n/a            | n/a       | n/a                 | n/a                 | 55        |
+| Order Received                | n/a          | n/a                 | n/a            | n/a       | n/a                 | n/a                 | 55        |
+| RIFINITURA VtVP45             | 14           | n/a                 | n/a            | n/a       | n/a                 | n/a                 | 55        |
+| SCELTA VtVP45                 | 3.5          | n/a                 | 3508.44        | 0.02      | n/a                 | n/a                 | 55        |
+| SPRUZZO VtVP45                | 11.5         | n/a                 | n/a            | 0.08      | n/a                 | n/a                 | 55        |
+------------------------------------------------------------------
+Resource utilizations:
+glazing_machine: 0%
+testing_machine: 0%
+casting_machine: 5%
+scelta_machine: 0%
+finishing_machine: 0%
+baking_machine: 21%
+System: 0%
+Duration distribution: 
+6117 - 25413: 54
+25414 - 44710: 0
+44711 - 64007: 0
+64008 - 83304: 0
+83305 - 102601: 0
+102602 - 121898: 0
+121899 - 141195: 0
+141196 - 160492: 0
+160493 - 179789: 0
+179790 - 199086: 1
+Waiting time distribution: 
+0 - 1413: 15
+1414 - 2827: 12
+2828 - 4241: 12
+4242 - 5655: 6
+5656 - 7069: 0
+7070 - 8483: 1
+8484 - 9897: 0
+9898 - 11311: 4
+11312 - 12725: 2
+12726 - 14139: 3
+Process cost distribution: 
+48 - 48: 55
+49 - 49: 0
+50 - 50: 0
+51 - 51: 0
+52 - 52: 0
+53 - 53: 0
+54 - 54: 0
+55 - 55: 0
+56 - 56: 0
+57 - 57: 0
+Cycle time distribution: 
+6117 - 25413: 54
+25414 - 44710: 0
+44711 - 64007: 0
+64008 - 83304: 0
+83305 - 102601: 0
+102602 - 121898: 0
+121899 - 141195: 0
+141196 - 160492: 0
+160493 - 179789: 0
+179790 - 199086: 1
+In timetable cycle time distribution: 
+6117 - 7530: 15
+7531 - 8944: 12
+8945 - 10358: 12
+10359 - 11772: 6
+11773 - 13186: 0
+13187 - 14600: 1
+14601 - 16014: 0
+16015 - 17428: 4
+17429 - 18842: 2
+18843 - 20256: 3
+Simulation started at: Fri Feb 22 22:42:00 UTC 2222
+Simulation ended at: Thu Feb 28 11:50:16 UTC 2222
