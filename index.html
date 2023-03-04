@@ -3,8 +3,10 @@
 <head>
     <meta charset="utf-8">
     <script type="text/javascript" src="./libraries/d3.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
     <!--script src="libraries/d3.v3.min.js"></script  -->
     <style>
+    
     body{    
         font-family:sans-serif;
     }
@@ -236,33 +238,275 @@
     <!--link rel="stylesheet" type="text/css" href="main_colours.css" /-->
     <script>
 
-    var timeAverage = 0;
+    var csvUrl = "/Simulation_2023-02-21_11-57-17/scenario_1/lavabi_10dofc_1.csv";
+    var reader = new FileReader();
 
-    d3.text("/Simulation_2023-02-21_11-57-17/Scenario_1/lavabi_10dofc_1.txt",function(error,data){
-        if(error)
-            return console.error(error);
+    fetch(csvUrl)
+      .then(response => response.text())
+      .then(csvText => {
+        reader.readAsText(new Blob([csvText], {type: "text/csv"}));
 
-        const myArray = data.split("\n");
-        console.log(myArray)
+        reader.onload = function() {
+          console.log(reader.result);
+        };
+      })
+      .catch(error => console.error(error));
+// Read the CSV file as text
+        //reader.readAsText(csvUrl);
+  
+    
+    var scenarios = 1
+    var maxYearTime = 0, maxMonthTime = 0,maxDayTime = 0
+    var minYearTime = 0, minMonthTime = 0,minDayTime = 0
+    var startTime=0 , endTime=0
+    var dataArray =[]
+    var countScene= 0
+    var product= []
+    var nomeDataset="/Simulation_2023-02-21_11-57-17/";
+    
+    d3.json(nomeDataset, function(error, newroot) {
         
-        for( i of myArray){
-            if(i.includes("Average acc process time: ")){
-                const tmp = i.split(": ") 
-                timeAverage = tmp[1]
-                console.log(tmp[1])
-            }
+        scenarios = newroot.length
+        for(var i = 1 ; i<= scenarios; i++){
+            //{scenario:"scene_1", timerank: "2", timeNeed: 6 , totalCost: 20, mouldChange: 3, 
+            // itemId: "1", bar_name: "scene_1"}
+                
+            dataArray.push({"scenario": "scene_"+i, timerank: 0, "timeNeed": 0, costRank: 0 ,totalCost: 20,
+                            coundChangeRank: 0,  mouldChange: 3, itemId: i, bar_name: "scene_"+i, details: []})
         }
-    });
+        console.log("data array:")
+        console.log( dataArray)
+        console.log("scenarios: " +scenarios)
+    })
+    setTimeout(() => {  getData() }, 1000); //more bigger is the time out more are presicesly the data
+    var scenarioTotalTime = 0
+
+    function getData(){
+        //scenarios
+        for(var i= 1; i<= scenarios; i++){
+
+            //var finalOrchestrator = "/Simulation_2023-02-21_11-57-17/scenario_"+i+"/finalOrchestrator.json"
+            //console.log ( "scenario_"+i+": \n")
+            /*d3.json(finalOrchestrator,function(data) {
+                
+                
+                
+                for(i in data){
+                    
+                    data[i].forEach(function (d){
+                        //console.log ( "processo_"+i + ": " +d)
+                    })
+                    
+                }
+
+            })*/
+            
+            
+            for(var j = 1; j<=10; j++ ){
+                var finalReports = "/Simulation_2023-02-21_11-57-17/scenario_"+i+"/finalReport_"+j+".json"
+                
+                loadData(finalReports);
+                
+            }
+            
+            
+        }
+        setTimeout(function() { 
+            console.log(dataArray);
+            scenarioTotalTime++; 
+            dataArray[0].timerank =1
+            console.log("max time: " + scenarioTotalTime)
+            dataArray.sort(function(a,b){return a.timeNeed-b.timeNeed})
+
+            for(var i = 0 ; i <scenarios ; i++){
+                    dataArray[i].timerank = i+1
+            }
+            dataArray.sort(function(a,b){return a.itemId - b.itemId})
+            drawHome()}, 500); 
+    }
+
+    var timeP = 0, timeN = 0;
+    var timesCount=0
+
+    function loadData(package){
+        
+
+               d3.json(package,function(data) {
+                    
+                   var scenarioNumb = package.substring(41,50);
+                    console.log("subStr: " +scenarioNumb)
+                   const countSceneNumb = scenarioNumb.length
+                   //console.log("conta: " + countSceneNumb)
+                   var getScene = 0 
+                   for(var i =0; i<countSceneNumb; i++ ){
+                        const type =parseInt(scenarioNumb[i])
+                        //console.log("i : " +type)
+                        if(isNaN(type) ){
+                            break;
+                        }else{
+                            getScene++
+                            //console.log("countttt: " + getScene)
+                        }
+                   }
+                   if(getScene == 1){ scenarioNumb = scenarioNumb[0]}
+                   else if(getScene == 2){scenarioNumb = scenarioNumb.substring(0,2)}
+                   
+                   console.log("scenario: " + scenarioNumb)
+                   product = [];
+                   for(x in data){
+                        if(!product.includes(x)){
+                            product.push(x)
+                        }
+                        //console.log("scene prod: " + product)
+                       for(z in data[x]){
+                           var tmpDate = data[x][z].split(" ")
+                           var splitDate = tmpDate[0].split("-")
+                           var year = splitDate[0]
+                           var month = splitDate[1]
+                           var day = splitDate[2]
+                           
+                           if( z == "StartTime"){
+                               startTime = new Date( year, month -1, day, 5 ,0,0).getTime()
+                               //console.log(z+": " +startTime)
+                           }else if(z == "EndTime"){
+                               endTime = new Date( year, month -1, day, 5 ,0,0).getTime()
+                               //console.log(z+": " +endTime)
+                           }
+                       }
+                       var timeNeededEpoch = (endTime - startTime) /1000
+                       var dayNeed = (timeNeededEpoch /3600)/24
+                       var strDayNeeded = dayNeed.toString()
+                       if(strDayNeeded.includes(".")){
+                           dayNeed = parseInt(dayNeed+1)
+                           //console.log("parsed: " +dayNeed)
+                       }
+                       /*
+                       if( timesCount < 2){
+                            timeP += dayNeed
+                            timesCount++
+                       }else if(timesCount > 3){
+                            timesCount = 0
+                            timeP = 0
+                            timeN = 0
+                       }else{
+                            timesCount++
+                            timeN += dayNeed}
+
+                       console.log( "timeP: "+ timeP + " timeN: " + timeN)
+                        */
+                       var index = parseInt(scenarioNumb)-1
+                       const timeNeededInArray = dataArray[index]
+                       
+                       console.log("total time: " + timeNeededInArray.timeNeed)
+
+                        if(dayNeed > timeNeededInArray.timeNeed){
+                            timeNeededInArray.timeNeed = dayNeed
+                        }
+                        if(dayNeed > scenarioTotalTime){
+                           scenarioTotalTime = dayNeed
+                           //console.log("total time:  "+ scenarioTotalTime)
+                       }
+
+                       //console.log("time needed Epoch: "+ timeNeededEpoch + " day needed: " + dayNeed)
+                       
+                   }
+
+               })
+               setTimeout(() => {
+                for(var i= 1; i<= scenarios; i++){
+                    for(j of product){
+                        for(var z = 1 ; z <= 10 ;z++){
+                            var prodFile = "/Simulation_2023-02-21_11-57-17/scenario_"+i+"/"+j +"_"+z+".csv"
+                            //console.log("prod file: " +prodFile)
+                            //loadDetails(prodFile)
+                        }
+                    }
+                }
+               }, 500);
+               
+    }
+    var c = 0
+    function loadDetails(prodFile){
+
+        d3.csv(prodFile, function(data) {
+        
+        //d3.js foreach loop on all the paths contained in a svg
+        c++
+        if(c <2 ){
+            data.forEach(function(d) { 
+                d.forEach(function(a){
+                    console.log( "row:" + a)
+                })
+                
+            })
+        }
+        })
+        
+        
+    }
+
+    /*
+    var timeAverage1 = 0,timeAverage2 = 0,timeAverage3 = 0,timeAverage4 = 0,timeAverage5 = 0,timeAverage6 = 0,
+        timeAverage7 = 0,timeAverage8 = 0,timeAverage9 = 0,timeAverage10 = 0;
+    var costAverage1 = 0,costAverage2 = 0,costAverage3 = 0,costAverage4 = 0,costAverage5 = 0,costAverage6 = 0,
+        costAverage7 = 0,costAverage8 = 0,costAverage9 = 0,costAverage10 = 0;
+    var fetchCount1 = 0,fetchCount2 = 0,fetchCount3 = 0,fetchCount4 = 0,fetchCount5 = 0,fetchCount6 = 0,
+        fetchCount7 = 0,fetchCount8 = 0,fetchCount9 = 0,fetchCount10 = 0;
+
+    function updateDataFromTests(package){
+
+        d3.text(package,function(error,data){
+            if(error)
+                return console.error(error);
+
+            const myArray = data.split("\n");
+            console.log(myArray)
+            
+            for( i of myArray){
+                if(i.includes("Average acc process time: ")){
+                    const tmp = i.split(": ") 
+                    timeAverage += parseFloat(tmp[1])
+                    console.log("time average: " + timeAverage)
+                    fetchCount++
+                }
+                if(i.includes("Average process cost: ")){
+                    const tmp = i.split(": ") 
+                    costAverage += parseFloat(tmp[1])
+                    console.log("cost average: " + costAverage)
+                }
+               
+            }
+            console.log("fecth times: "+ fetchCount)
+            
+        });
+
+    }
+    function fetchDataHomePage(){
+        for(i to 10){
+            updateDataFromTests("/Simulation_2023-02-21_11-57-17/Scenario_1/lavabi_10dofc_" + String(i) + ".txt")
+        }
+  
+    }
+    fetchDataHomePage()
+    setTimeout(() => { average() }, 15);
+    function average(){
+        timeAverage1 = timeAverage1/fetchCount1
+        costAverage1 = costAverage1/fetchCount1
+        console.log("final average time: " + timeAverage1)
+        console.log("final average cost: " + costAverage1)
+    }
+    
+*/
     var dataTop3;
     var top3Flag = false, barFlag= false;
     var svg
     var color= d3.scaleOrdinal(d3.schemeCategory20);
     
-    sceneData = [{scenario:"scene_1", timerank: "2", timeNeed: 6 , totalCost: 20, mouldChange: 3, itemId: "1", bar_name: "VANN"}
-                ,{scenario:"scene_2", timerank: "4", timeNeed: 10 ,totalCost: 29, mouldChange: 2, itemId: "2", bar_name: "VSV50"}
-                ,{scenario:"scene_3", timerank: "5", timeNeed: 15 ,totalCost: 10, mouldChange: 4, itemId: "3", bar_name: "BSV50"}
-                ,{scenario:"scene_4", timerank: "3", timeNeed: 8 ,totalCost: 17, mouldChange: 6, itemId: "4", bar_name: "VPZN"}
-                ,{scenario:"scene_5", timerank: "1", timeNeed: 4 ,totalCost: 30, mouldChange: 2, itemId: "5", bar_name: "BS55N"}];
+    sceneData = [{scenario:"scene_1", timerank: "2", timeNeed: 6 , totalCost: 20, mouldChange: 3, itemId: "1", bar_name: "scene_1"}
+                ,{scenario:"scene_2", timerank: "4", timeNeed: 10 ,totalCost: 29, mouldChange: 2, itemId: "2", bar_name: "scene_2"}
+                ,{scenario:"scene_3", timerank: "5", timeNeed: 15 ,totalCost: 10, mouldChange: 4, itemId: "3", bar_name: "scene_3"}
+                ,{scenario:"scene_4", timerank: "3", timeNeed: 8 ,totalCost: 17, mouldChange: 6, itemId: "4", bar_name: "scene_4"}
+                ,{scenario:"scene_5", timerank: "1", timeNeed: 4 ,totalCost: 30, mouldChange: 2, itemId: "5", bar_name: "scene_5"}];
 
     var container_dimensions = {width:1200, height: 500},
         margin = {top: 50, right: 20, bottom: 20, left: 60},
@@ -1751,7 +1995,7 @@
     </div> <!-- pressable label to show product trend-->
     
     <script>
-        setTimeout(function() { d3.json('', drawHome) }, 500); 
+        //setTimeout(function() { d3.json('', drawHome) }, 1100); 
 
        
     </script>
