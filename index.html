@@ -2,8 +2,19 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-USA-Compatible" content="IE-edge">
+    <meta name="viewport"  content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Bosi Lou">
+    <!--meta name ="keywords" content="html5 javascript SEO CSS"--> <!--parole chiave per il motore di ricerca-->
+    <meta name="descption" content="Blog big data analisys">
+    <meta http-equiv="reply-to" content="marcololshine@hotmail.com">
     <script type="text/javascript" src="/libraries/d3.js"></script>
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
     <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js"></script>
+    
+
+
     <!--script src="libraries/d3.v3.min.js"></script  -->
     <style>
     
@@ -241,7 +252,22 @@
     var csvUrl = "/Simulation_2023-03-03_12-51-45/scenario_1/Simulation_1/monob_mpzn_1.csv";
    
     */
-   
+        zipFilePath = "/Simulation_2023-03-03_12-51-45/Scenario_1/Simulation_1/monob_mpzn_1.bpmn.csv.gz"
+    fetch(zipFilePath)
+        .then(response => response.arrayBuffer())
+        .then(buffer => {
+            // Unzip the file
+            const data = pako.inflate(buffer, { to: 'string' });
+            const rows = data.split("\n");
+    
+            // Iterate through the rows
+            rows.forEach(row => {
+            // Process each row
+                const rowArray = row.split(",")
+                console.log(rowArray);
+            });
+        })
+        .catch(error => console.error(error));
     var scenarios = 1
     
     var dataArray =[]
@@ -346,6 +372,7 @@
     var count10 = 0
     var countScenes = 1;
     var proScene = 0
+    var top3Array = []  //tempo, cost , mouldChange
     async function loadProdCost(){
         console.log("executed")
         const promises = []; 
@@ -374,6 +401,12 @@
                         promises.push(readCsvFile(csvFile,i ,z));
                         // console.log(counts)
                         // console.log(finalReports)
+                        const unzipFolder = "/Simulation_2023-03-03_12-51-45/scenario_"+i+"/Simulation_"+j;
+                        const zipFilePath = "/Simulation_2023-03-03_12-51-45/scenario_"+i+"/Simulation_"+j+"/"+dataArray[i-1].details[z].line_name+"_"+j+".bpmn.csv.gz";
+                        const zippedFile = "/Simulation_2023-03-03_12-51-45/scenario_"+i+"/Simulation_"+j+"/"+dataArray[i-1].details[z].line_name+"_"+j+".bpmn.csv"
+                        
+                      
+                        // Do something with the unzipped contents
                         
                     }
 
@@ -415,25 +448,6 @@
             dataArray[i].totalCost = totalCostScene[i].average;
         }
 
-        dataArray.sort((a, b) => a.totalCost - b.totalCost);
-
-        //get top3 of cost
-        var top3CostCount = 0;
-        var top3Cost = []
-
-        console.log(dataArray);
-        for(i in dataArray){
-            dataArray[i].costRank = parseInt(i) +1
-            if(top3CostCount < 3){
-                top3Cost.push(dataArray[i])
-                top3CostCount+=1
-            }
-
-        }
-        //console.log("top3 cost:" )
-        //console.log(top3Cost)
-        dataArray.sort((a, b) => a.itemId - b.itemId);
-
         
         //add time needed for every scene
         for( var i = 0 ;  i <scenarios ; i++){
@@ -450,26 +464,62 @@
         }
 
         //time rank 
-        dataArray.sort((a, b) => a.timeNeed - b.timeNeed);
-        //get top 3 time rank
-        var top3RankCount = 0;
-        var top3Time = []
 
-        for (var i=1 ; i <= dataArray.length; i++){
-            dataArray[i-1].timerank = i 
-            if(top3RankCount < 3){
-                top3Time.push(dataArray[i-1])
-                top3RankCount+=1
+        //get top time rank
+        dataArray.sort(function compare(a,b){
+            if (a.timeNeed !== b.timeNeed) {
+                return a.timeNeed - b.timeNeed;
+            } else if(a.totalCost - b.totalCost){
+                return a.totalCost - b.totalCost;
+            }else{
+                return a.mouldChange - b.mouldChange
             }
+        })
+
+        for(i in dataArray){
+            dataArray[i].timerank = parseInt(i) +1
         }
-        //console.log("top3 time:" )
-        //console.log(top3Time)
+        top3Array.push( dataArray[0])
         dataArray.sort((a, b) => a.itemId - b.itemId);
 
+       //get cost rank and sort it
+       dataArray.sort(function compare(a,b){
+            if (a.totalCost !== b.totalCost) {
+                return a.totalCost - b.totalCost;
+            } else if(a.timeNeed !== b.timeNeed){
+                return a.timeNeed - b.timeNeed;
+            }else{
+                return a.mouldChange - b.mouldChange;
+            }
+        })
+        for(i in dataArray){
+            dataArray[i].costRank = parseInt(i) +1
+        }
+        top3Array.push( dataArray[0])
+        dataArray.sort((a, b) => a.itemId - b.itemId);
+
+        top3Array.push( dataArray[0]) // to change after that we have mould changes
+        console.log("data array after added ranks and data")
+        console.log(dataArray)
+        console.log("top 3")
+        console.log(top3Array)
         drawHome()
 
     }
     
+    async function unzipFiles(zipFilePath, outputFilePath, outputFolder) {
+        JSZipUtils.getBinaryContent(zipFilePath, function(err, data) {
+        if(err) {
+            throw err; // or handle err
+        }
+
+        JSZip.loadAsync(data).then(function () {
+            // ...
+        }).catch(function (err) {
+        console.error('Error loading zip file:', err);
+    });
+    });
+    }
     function readCsvFile(csvFile ,scenario, prodotto) {
         return new Promise((resolve, reject) => {
             var reader = new FileReader();
@@ -1181,9 +1231,9 @@
             drawBarChartCost(dataArray, "totalCost" ,  margin.top * 12, margin.left * 12 , width /2 )
             drawBarChart("data/data1.tsv", "mouldChange" ,  margin.top * 24 , margin.left * 12, width /2)
     
-            drawTop3("scene_1",'#F3CDCD',dati[0] ,margin.top, margin.left,width /2)
-            drawTop3("scene_2", '#AFF1AD', dati[1],margin.top *12, margin.left,width /2)
-            drawTop3("scene_3", '#9DF7F1',dati[2],margin.top *24, margin.left,width /2)
+            drawTop3("scene_1",'#F3CDCD', top3Array[0] ,margin.top, margin.left,width /2)
+            drawTop3("scene_2", '#AFF1AD', top3Array[1],margin.top *12, margin.left,width /2)
+            drawTop3("scene_3", '#9DF7F1',top3Array[2],margin.top *24, margin.left,width /2)
 
         }else{      //not pressed
             d3.select(".dropbtn").style("background-color", "#333");
@@ -1224,10 +1274,10 @@
     }*/
     function add_labelHome(posY, posX ,dati){
         
-        var sceneText = dati.id +"\n" +"TOTAL_COST: " + dati.total_cost +"\n"+ "TOTAL TIME: "+ dati.total_time + "\n" +
-                        "mould changes: " + dati.mould_changes 
+        var sceneText = dati.scenario +"\n" +"TOTAL_COST: " + dati.totalCost +"\n"+ "TOTAL TIME: "+ dati.timeNeed + "\n" +
+                        "mould changes: " + dati.mouldChange
         svg.append('text')
-            .text(dati.id.toUpperCase() +":")
+            .text(dati.scenario.toUpperCase() +":")
             .attr('text-anchor','middle')
             .style("dominant-baseline","central")
             .attr('x', posX +100)
@@ -1240,10 +1290,10 @@
                 .style('opacity',1)  
         
         svg.append('text')
-            .text("TOTAL COST: " + dati.total_cost)
+            .text("TOTAL COST: " + dati.totalCost)
             .attr('text-anchor','middle')
             .style("dominant-baseline","central")
-            .attr('x', posX +200)
+            .attr('x', posX +290)
             .attr('y', posY +150)
             .style("font", "24px times")
             .attr('class','linelabel')
@@ -1253,7 +1303,7 @@
                 .style('opacity',1)     
         
         svg.append('text')
-            .text("TOTAL TIME: " + dati.total_time)
+            .text("TOTAL TIME: " + dati.timeNeed)
             .attr('text-anchor','middle')
             .style("dominant-baseline","central")
             .attr('x', posX +200)
@@ -1266,7 +1316,7 @@
                 .style('opacity',1)  
 
         svg.append('text')
-            .text("MOULD CHANGES: " + dati.mould_changes)
+            .text("MOULD CHANGES: " + dati.mouldChange)
             .attr('text-anchor','middle')
             .style("dominant-baseline","central")
             .attr('x', posX +230)
@@ -1598,7 +1648,6 @@
         }); 
 
     function drawDetailsPage() {
-        
        
         d3.select("body").append("div")
             .attr("id" , "key")
