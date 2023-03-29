@@ -9,265 +9,25 @@
     <meta name="descption" content="Blog big data analisys">
     <meta http-equiv="reply-to" content="marcololshine@hotmail.com">
     <script type="text/javascript" src="/libraries/d3.js"></script>
-    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+   
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js"></script>
     
-
-
+    <link rel="stylesheet" href="main.css">
     <!--script src="libraries/d3.v3.min.js"></script  -->
-    <style>
-    
-    body{    
-        font-family:sans-serif;
-    }
-    /*main menu bar*/
-    ul {
-
-        list-style-type: none;
-        margin: 0;
-        width: 1425px; /*width*/
-        margin-top: -8px;
-        margin-left: -8px;
-        margin-bottom: 0px;
-        padding: 0;
-        overflow: hidden;
-        background-color: #333;
-        }
-
-    li {
-        float: left;
-        }
-
-    li a {
-        display: block;
-        color: white;
-        text-align: center;
-        padding: 14px 16px;
-        text-decoration: none;
-        }
-
-
-    .dropbtn {
-        background-color: #333;
-        color: rgb(250, 246, 246);
-        padding: 20px, 20px, 20px, 20px;
-        font-size: 16px;
-        border: none;
-        cursor: pointer;
-        }
-
-    .barText{
-        background-color: #333;
-        color: rgb(250, 246, 246);
-        padding: 20px, 20px, 20px, 20px;
-        margin-left: 450px;
-        font-size: 20px;
-        border: none;
-        cursor: default;
-    }  
-    .barTextDetails{
-        background-color: #333;
-        color: rgb(250, 246, 246);
-        padding: 20px, 20px, 20px, 20px;
-        margin-left: 600px;
-        font-size: 20px;
-        border: none;
-        cursor: default;
-    }      
-
-    .dropbtn:hover, .dropbtn:focus {
-        background-color: #b94b29;
-        }  
-    .dropdown a:hover {background-color: #ddd;} 
-    /*end menu bar*/
-    /*body */
-    .backBtn{
-        background-color: #333;
-        color: rgb(250, 246, 246);
-        padding: 20px, 20px, 20px, 20px;
-        margin-left: 530px;
-        font-size: 16px;
-        border: none;
-        cursor: pointer;
-    }
-
-    .backBtn:hover, .backBtn:focus {
-        background-color: #b94b29;
-        }  
-
-    .axis path,.axis line {
-        fill: none;
-        stroke: #000;
-        shape-rendering: crispEdges;
-        }
-
-    .bar {
-        fill: orange;
-    }
-
-    .bar:hover {
-        fill: orangered ;
-    }
-
-    .x.axis path {
-        display: none;
-    }
-
-    .d3-tip {
-        line-height: 1;
-        font-weight: bold;
-        padding: 12px;
-        background: rgba(0, 0, 0, 0.8);
-        color: #fff;
-        border-radius: 2px;
-        }
-
-    /* Creates a small triangle extender for the tooltip */
-    .d3-tip:after {
-        box-sizing: border-box;
-        display: inline;
-        font-size: 10px;
-        width: 100%;
-        line-height: 1;
-        color: rgba(0, 0, 0, 0.8);
-        content: "\25BC";
-        position: absolute;
-        text-align: center;
-        }
-
-    /* Style northward tooltips differently */
-    .d3-tip.n:after {
-        margin: -1px 0 0 0;
-        top: 100%;
-        left: 0;
-        }
-    /*end body*/
-    .svg{
-        height: 1800px;
-        margin-top: 8px;
-    }
-
-
-    /*details page config*/
-    .axis path, line{
-        stroke:black;
-    }
-    .timeseries path{
-        stroke-width:3px;
-    }
-    .timeseries circle{
-        stroke: white;
-    }
-    .timeseries text{
-        fill: white;
-        stroke: none;
-        font-size:12px;
-        font-weight: bold;
-    }
-    .line {
-        float:left;
-    }
-    .line_container{
-        width: 150px;
-        height: 20px;
-    }
-    path{
-        fill: none;
-    }
-    .key{
-        
-        float:right;
-    }
-    .key_line{
-        font-size:17px;
-        width:100%;
-    }
-    .key_square{
-        height:10px;
-        width:10px;
-        outline:solid 1px black;
-        float:left;
-        margin-right:10px;
-        margin-top:6px;
-        margin-left:10px;
-    }
-    #timeseries{
-        padding: 20px 0px 0px 20px; /* top, right , bottom, left*/
-        float:left;
-    }
-    #mouldChange{
-        padding: 50px 0px 0px 20px; /* top, right , bottom, left*/
-        float:left;
-    }
-    
-    #key{
-        position: absolute;
-        margin-top: 50px;
-        margin-left: 1200px;
-        padding: 20px 0px 0px 0px;
-        
-    }
-    .node{
-        position: absolute;
-        text-align: left;
-        margin-left: -130px;
-        margin-top: 60px;
-    }
-    #selectTimeBtn{
-        position: absolute;
-        height:20px;
-        margin-left: -200px;
-        margin-top: 540px;
-    }
-
-    .axis text {
-        font: 10px sans-serif;
-        }
-
-    .axis path,.axis line {
-        fill: none;
-        stroke: #000;
-        shape-rendering: crispEdges;
-        }
-
-    .bar {
-        fill: steelblue;
-        fill-opacity: .9;
-        }
-
-    .x.axis path {
-        display: none;
-        }
-
-    label {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        }
-    </style>
     <!--link rel="stylesheet" type="text/css" href="main_colours.css" /-->
     <script>
     /*
+    #zoomDetail{
+        position: absolute;
+    }
+    #XaxesSvg{
+        position: absolute;
+    }
     var csvUrl = "/Simulation_2023-03-03_12-51-45/scenario_1/Simulation_1/monob_mpzn_1.csv";
    
     */
-        zipFilePath = "/Simulation_2023-03-03_12-51-45/Scenario_1/Simulation_1/monob_mpzn_1.bpmn.csv.gz"
-    fetch(zipFilePath)
-        .then(response => response.arrayBuffer())
-        .then(buffer => {
-            // Unzip the file
-            const data = pako.inflate(buffer, { to: 'string' });
-            const rows = data.split("\n");
     
-            // Iterate through the rows
-            rows.forEach(row => {
-            // Process each row
-                const rowArray = row.split(",")
-                console.log(rowArray);
-            });
-        })
-        .catch(error => console.error(error));
     var scenarios = 1
     
     var dataArray =[]
@@ -279,7 +39,7 @@
     
     //create data for each scenarios
     d3.json(nomeDataset, function(error, newroot) {
-        console.log("newroot: " + newroot)
+        //console.log("newroot: " + newroot)
         
         scenarios = newroot.length
         for(var i = 1 ; i<= scenarios; i++){
@@ -291,9 +51,9 @@
         }
 
         getData()
-        console.log("data array:")
-        console.log( dataArray)
-        console.log("scenarios: " +scenarios)
+        //console.log("data array:")
+        //console.log( dataArray)
+        //console.log("scenarios: " +scenarios)
     })
     //get data
     
@@ -305,10 +65,10 @@
         var promises = [];
         //scenarios
         
-        for(var i= 1; i<= scenarios; i++){
+        for(let i= 1; i<= scenarios; i++){
 
                 var finalOrchestrator = "/Simulation_2023-03-03_12-51-45/scenario_"+i+"/finalOrchestrator.json"
-            //console.log ( "scenario_"+i+": \n")
+                //console.log ( "scenario_"+i+": \n")
                 var promise =d3.json(finalOrchestrator,function(data) {
                     var simulationCount = 0;
                     for(j in data){
@@ -317,7 +77,7 @@
                             //console.log ( "processo_"+j + ": " +d)
                             
                             dataArray[sceneCount].details.push({line_name:d.substring(0, d.length-5) , 
-                                line_id: d.substring(0, d.length-5), line_cost: 0.0})
+                                line_id: d.substring(0, d.length-5), line_cost: 0.0, data: []})
                             simulationCount+= 1
                             //console.log("simulation count: " +simulationCount)  //se nelle simulazioni i file sono differenti
                         })
@@ -335,8 +95,8 @@
             
                
         }
-        console.log("prod in scene")
-        console.log(sceneProdCountArray)
+        //console.log("prod in scene")
+        //console.log(sceneProdCountArray)
         
       
 
@@ -374,7 +134,7 @@
     var proScene = 0
     var top3Array = []  //tempo, cost , mouldChange
     async function loadProdCost(){
-        console.log("executed")
+        //console.log("executed")
         const promises = []; 
     
         
@@ -386,14 +146,14 @@
             });
         }
         var f= 0
-        for(var i= 1; i<= scenarios; i++){
+        for(let i= 1; i<= scenarios; i++){
             
-            for(var j = 1; j<=10; j++ ){ 
+            for(let j = 1; j<=10; j++ ){ 
                     //gira per [2,2,2,2,2,2] a seconda di prodotti in tutti i scenari
                     var finalRep = "/Simulation_2023-03-03_12-51-45/scenario_"+i+"/Simulation_"+j+"/finalReport_"+j+".json"
                     await loadTime(finalRep, i-1 , j);
 
-                    for ( var z = 0 ; z < sceneProdCountArray[j-1]; z++){
+                    for ( let z = 0 ; z < sceneProdCountArray[j-1]; z++){
 
                         var csvFile = "/Simulation_2023-03-03_12-51-45/scenario_"+i+"/Simulation_"+j+"/"+dataArray[i-1].details[z].line_name+"_"+j+".csv"
                         // console.log("files:")
@@ -401,12 +161,6 @@
                         promises.push(readCsvFile(csvFile,i ,z));
                         // console.log(counts)
                         // console.log(finalReports)
-                        const unzipFolder = "/Simulation_2023-03-03_12-51-45/scenario_"+i+"/Simulation_"+j;
-                        const zipFilePath = "/Simulation_2023-03-03_12-51-45/scenario_"+i+"/Simulation_"+j+"/"+dataArray[i-1].details[z].line_name+"_"+j+".bpmn.csv.gz";
-                        const zippedFile = "/Simulation_2023-03-03_12-51-45/scenario_"+i+"/Simulation_"+j+"/"+dataArray[i-1].details[z].line_name+"_"+j+".bpmn.csv"
-                        
-                      
-                        // Do something with the unzipped contents
                         
                     }
 
@@ -433,14 +187,14 @@
             }
 
         }
-        console.log("start array: ")
-        console.log(startTimeArray)
-        console.log("end array: ")
-        console.log(endTimeArray)
+        //console.log("start array: ")
+        //console.log(startTimeArray)
+        //console.log("end array: ")
+        //console.log(endTimeArray)
 
         proScene+=1
-        console.log("total cost ")
-        console.log(totalCostScene)
+        //console.log("total cost ")
+        //console.log(totalCostScene)
         
         
         //add cost needed for every scene
@@ -450,7 +204,7 @@
 
         
         //add time needed for every scene
-        for( var i = 0 ;  i <scenarios ; i++){
+        for( let i = 0 ;  i <scenarios ; i++){
             var timeNeed = endTimeArray[i]-startTimeArray[i]
 
             var timeNeededEpoch = (endTimeArray[i] - startTimeArray[i]) /1000
@@ -501,8 +255,9 @@
         top3Array.push( dataArray[0]) // to change after that we have mould changes
         console.log("data array after added ranks and data")
         console.log(dataArray)
-        console.log("top 3")
-        console.log(top3Array)
+        //console.log("top 3")
+        //console.log(top3Array)
+  
         drawHome()
 
     }
@@ -528,7 +283,7 @@
             reader.onload = function() {
                 var rows = reader.result.trim().split("\n");
 
-                for (var i = 0; i < rows.length; i++) {
+                for (let i = 0; i < rows.length; i++) {
                     if (rows[i] == "Instance #,Cycle time (s),Cycle time in time table only (s),Waiting time (s),Cost") { 
                         Details = true;
                         continue;
@@ -859,7 +614,7 @@
         console.log("final average cost: " + costAverage1)
     }
     
-*/
+*/  
     var dataTop3;
     var top3Flag = false, barFlag= false;
     var svg
@@ -875,9 +630,9 @@
         margin = {top: 50, right: 20, bottom: 20, left: 60},
         width = 1425 - margin.left - margin.right -40 -200,
         height =  container_dimensions.height - margin.top - margin.bottom -10;
-   
-    
+
     function drawHome(){
+        
        
         var menu = d3.select(".menu").select("ul")
         if(!barFlag){
@@ -897,19 +652,21 @@
             .attr("width", 1415)
             .attr("height", height + margin.top + margin.bottom )
 
-        console.log("init")
+        //console.log("init")
         drawAxesLabel("Total Time" , 100, 20 , "homeLabelY")
-        drawBarChart1(dataArray, "totalTime" , margin.top ,  margin.left +100, width)
+        drawBarChartTotalTime(dataArray, "totalTime" , margin.top ,  margin.left +100, width-300)
         drawAxesLabel("Scenario" , 1300, 500, "homeLabelX")
         
         drawAxesLabel("Total Cost" , 100, 580, "homeLabelY")
-        drawBarChartCost(dataArray, "totalCost", margin.top * 12, margin.left+100 , width )
+        drawBarChartCost(dataArray, "totalCost", margin.top * 12, margin.left+100 , width -300)
         drawAxesLabel("Scenario" , 1300, 1050, "homeLabelX")
 
         drawAxesLabel("Mould Changes" , 100, 1160, "homeLabelY")
         drawBarChart("data/data1.tsv", "mouldChange", margin.top * 24 , margin.left+100, width)  
         drawAxesLabel("Scenario" , 1300, 1650, "homeLabelX")
     }
+
+    var sceneDataToLoad ;
 
     function drawBarChartCost(data ,id, positionY , positionX , widthX){
 
@@ -928,7 +685,7 @@
 
         x.domain(data.map(function(d) { return d.bar_name; 
             console.log(d.bar_name)}));
-        y.domain([0, d3.max(data, function(d) { return d.totalCost; })]);
+        y.domain([10000, d3.max(data, function(d) { return d.totalCost +1000; })]);
 
         g.append("g") //create a new g
             .attr("class", "x axis")
@@ -948,7 +705,7 @@
         g.selectAll(".bar")
             .data(data)
             .enter().append("rect")
-            
+            .attr("id", function(d, i) { return "scene_" + i; })
             .attr("fill", function(d){
                 if(d.costRank == "1"){
                     return "#F3CDCD"
@@ -1012,14 +769,16 @@
                     .remove()
                 })
             .on('click', function (d){
-                console.log("clicked")
+                sceneDataToLoad = this.id.charAt(this.id.length - 1)
+                console.log("clicked scene_"+ sceneDataToLoad);
                 d3.select(".menu").select("ul").selectAll("li").remove()
                 d3.select("svg").remove()
                 barFlag = false
-                drawDetailsPage()
+                Promise.all([getDetailsData(), oldData()]).then(ris=>drawDetailsPage()).catch(err=>console.log(err))
+                
             } )
     }
-    function drawBarChart1(data, id, positionY , positionX , widthX){
+    function drawBarChartTotalTime(data, id, positionY , positionX , widthX){
         
         var x = d3.scaleBand()
             .range([0, widthX ], .1,  1);
@@ -1036,7 +795,7 @@
 
         x.domain(data.map(function(d) { return d.bar_name; 
             console.log(d.bar_name)}));
-        y.domain([0, d3.max(data, function(d) { return d.timeNeed; })]);
+        y.domain([0, d3.max(data, function(d) { return d.timeNeed +3; })]);
 
         g.append("g") //create a new g
             .attr("class", "x axis")
@@ -1056,7 +815,7 @@
         g.selectAll(".bar")
             .data(data)
             .enter().append("rect")
-            
+            .attr("id", function(d, i) { return "scene_" + i; })
             .attr("fill", function(d){
                 if(d.timerank == "1"){
                     return "#F3CDCD"
@@ -1120,11 +879,12 @@
                     .remove()
                 })
             .on('click', function (d){
-                console.log("clicked")
+                sceneDataToLoad = this.id.charAt(this.id.length - 1)
+                console.log("clicked scene_"+sceneDataToLoad);
                 d3.select(".menu").select("ul").selectAll("li").remove()
                 d3.select("svg").remove()
                 barFlag = false
-                drawDetailsPage()
+                Promise.all([getDetailsData(), oldData()]).then(ris=>drawDetailsPage()).catch(err=>console.log(err))
             } )
        
     }
@@ -1175,17 +935,21 @@
             g.selectAll(".bar")
                 .data(data)
                 .enter().append("rect")
+                .attr("id", function(d, i) { return "scene_" + i; })
+
                 .attr("class", "bar")
                 .attr("x", function(d) { return x(d.letter); })
                 .attr("width", x.bandwidth)
                 .attr("y", function(d) { return y(d.frequency); })
                 .attr("height", function(d) { return height - y(d.frequency); })
                 .on('click', function (d){
-                    console.log("clicked")
+                    sceneDataToLoad = this.id.charAt(this.id.length - 1)
+                    console.log("clicked scene_"+sceneDataToLoad);
+
                     d3.select(".menu").select("ul").selectAll("li").remove()
                     d3.select("svg").remove()
                     barFlag = false
-                    drawDetailsPage()
+                    Promise.all([getDetailsData(), oldData()]).then(ris=>drawDetailsPage()).catch(err=>console.log(err))
                 } )
 
                 
@@ -1212,8 +976,7 @@
                 .style('opacity',1) 
     }
 
-    var dati = [{id: "scene_1",total_cost: 10, total_time: 20, mould_changes: 2},{id: "scene_", total_cost: 12, total_time: 23, mould_changes: 1}
-            ,{id: "scene_3" , total_cost: 20, total_time: 10, mould_changes: 3}];
+
 
     function drawTop3Page() {
         if(!top3Flag){ // pressed
@@ -1227,13 +990,13 @@
             d3.select("svg").selectAll("#homeLabelY")
                 .attr('x', 650)
             
-            drawBarChart1(dataArray, "totalTime", margin.top , margin.left * 12, width /2)
+            drawBarChartTotalTime(dataArray, "totalTime", margin.top , margin.left * 12, width /2)
             drawBarChartCost(dataArray, "totalCost" ,  margin.top * 12, margin.left * 12 , width /2 )
             drawBarChart("data/data1.tsv", "mouldChange" ,  margin.top * 24 , margin.left * 12, width /2)
     
-            drawTop3("scene_1",'#F3CDCD', top3Array[0] ,margin.top, margin.left,width /2)
-            drawTop3("scene_2", '#AFF1AD', top3Array[1],margin.top *12, margin.left,width /2)
-            drawTop3("scene_3", '#9DF7F1',top3Array[2],margin.top *24, margin.left,width /2)
+            drawTop3(top3Array[0].bar_name,'#F3CDCD', top3Array[0] ,margin.top, margin.left,width /2)
+            drawTop3(top3Array[1].bar_name, '#AFF1AD', top3Array[1],margin.top *12, margin.left,width /2)
+            drawTop3(top3Array[2].bar_name, '#9DF7F1',top3Array[2],margin.top *24, margin.left,width /2)
 
         }else{      //not pressed
             d3.select(".dropbtn").style("background-color", "#333");
@@ -1258,11 +1021,12 @@
             //.on('mouseover',function(d){ d3.select("rect").attr("fill", "#F4C9C9")})
             //.on('mouseout', function(d){d3.select("rect").attr("fill", "#F3CDCD")})
             .on('click', function (d){
-                console.log("clicked")
+                sceneDataToLoad = this.id.charAt(this.id.length - 1)
+                console.log("clicked scene_"+sceneDataToLoad);
                 d3.select(".menu").select("ul").selectAll("li").remove()
                 d3.select("svg").remove()
                 barFlag = false
-                drawDetailsPage()
+                Promise.all([getDetailsData(), oldData()]).then(ris=>drawDetailsPage()).catch(err=>console.log(err))
             } )
 
         add_labelHome(scenePos, positionX, dati)
@@ -1389,6 +1153,8 @@
 		.range([0,100]);
 
     var data=[];
+function oldData(){
+    return new Promise((resolve, rejects)=>{
     d3.csv("./csvData/Tracciabilita.csv", function(rows) {
 
         data=rows;
@@ -1420,10 +1186,10 @@
                     yearsTime = new Date(year, 0, 1, 5, 0, 0).getTime()
                     
                     if(minMonth == 0 && maxMonth == 0 && minYear == 0 && maxYear ==0){
-                        /*console.log(d.Timestamp, ",it's: "+typeof(d.Timestamp))
-                        console.log("data tmp: " + tmp )
-                        console.log("data: " +data)
-                        console.log(minMonth,maxMonth,minYear,maxYear )*/
+                        // console.log(d.Timestamp, ",it's: "+typeof(d.Timestamp))
+                        // console.log("data tmp: " + tmp )
+                        // console.log("data: " +data)
+                        // console.log(minMonth,maxMonth,minYear,maxYear )
                         minMonth = maxMonth = month
                         minYear = maxYear = year
                     }
@@ -1643,12 +1409,60 @@
         minDate = new Date(minYear, minMonth -1, 1 , 5 ,0,0)  //new Date(year, month, day,
                                         //hours, minutes, seconds, milliseconds); 
         maxDate = new Date(maxYear, maxMonth , 1 , 5 ,0,0) // will show month +1
-
+        resolve()
         console.log("modelsName: " + modelsName)
         }); 
+        })
+    }
+
+    function getDetailsData(){
+        sceneDataToLoad = parseInt(sceneDataToLoad)
+        console.log("scenedataToLoad " + sceneDataToLoad)
+        
+        return new Promise((resolve, rejects)=>{
+        
+            for( let j = 0 ; j <  sceneProdCountArray[i-1]; j++){
+                var model = dataArray[i-1].details[j].line_name
+                const zipFilePath = "/Simulation_2023-03-03_12-51-45/scenario_"+(sceneDataToLoad+1)+"/Simulation_1/"+model+"_1.bpmn.csv.gz";
+                console.log("prodoct to load :"+model)
+                fetch(zipFilePath)
+                    .then(response => response.arrayBuffer())
+                    .then(buffer => {
+                        // Unzip the file
+                        const data = pako.inflate(buffer, { to: 'string' });
+                        const rows = data.split("\n");
+                        
+                        // Iterate through the rows
+                        rows.forEach(row => {
+                        // Process each row
+                            const rowArray = row.split(",")
+                            const activityName = rowArray[2]
+                            if(activityName == "Order Processed"){
+                                const CaseId = rowArray[0]  //sstay for product x
+                                var endTime = rowArray[6]
+                                
+                                
+                                var entireData = endTime.split("T");
+                                //console.log("entire data: " + entireData[0]);
+                                var data = entireData[0].split("-");
+                                var month = parseInt(data[1])
+                                var day = parseInt(data[2])
+                                var year = parseInt(data[0])
+                                //console.log(CaseId , year , month, day);
+                            }
+                        });
+                    })
+                .catch(error => console.error(error));
+            
+        }
+        resolve("data loaded fine")})
+    }
 
     function drawDetailsPage() {
-       
+        
+        console.log("data loded")
+        console.log("base data:")
+        console.log(baseData)
         d3.select("body").append("div")
             .attr("id" , "key")
 
@@ -1787,7 +1601,7 @@
                 .attr("height", 600)
                 .attr("transform", "translate(35," + 35+ ")")
                 .call(count_axis);
-        
+      
 
         var g = d3.select('#timeseries')
             .append('svg')
@@ -1798,7 +1612,7 @@
                 .call(zoom)
                 //.call(zoom)
             .append("g")
-                .attr("transform", "translate(" + margins.left + "," + margins.top -90 + ")")
+                .attr("transform", "translate(" + margins.left + "," + (margins.top -50) + ")")
                 .attr("id","chart")
                 
         var GX  = d3.select("#timeseries")
@@ -2351,7 +2165,7 @@
             */
     }
 
-    function get_timeseries_data(d,i){
+    function get_timeseries_data(d){
         // get the id of the current element
         //console.log("ddd: "+d.line_id )
         
@@ -2468,8 +2282,7 @@
     
     <script>
         //setTimeout(function() { d3.json('', drawHome) }, 1100); 
-
-       
-    </script>
+        
+    </script> 
 </body>
 </html>

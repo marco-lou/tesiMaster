@@ -1,0 +1,229 @@
+body{    
+    font-family:sans-serif;
+}
+/*main menu bar*/
+ul {
+
+    list-style-type: none;
+    margin: 0;
+    width: 1425px; /*width*/
+    margin-top: -8px;
+    margin-left: -8px;
+    margin-bottom: 0px;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+    }
+
+li {
+    float: left;
+    }
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    }
+
+
+.dropbtn {
+    background-color: #333;
+    color: rgb(250, 246, 246);
+    padding: 20px, 20px, 20px, 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    }
+
+.barText{
+    background-color: #333;
+    color: rgb(250, 246, 246);
+    padding: 20px, 20px, 20px, 20px;
+    margin-left: 450px;
+    font-size: 20px;
+    border: none;
+    cursor: default;
+}  
+.barTextDetails{
+    background-color: #333;
+    color: rgb(250, 246, 246);
+    padding: 20px, 20px, 20px, 20px;
+    margin-left: 600px;
+    font-size: 20px;
+    border: none;
+    cursor: default;
+}      
+
+.dropbtn:hover, .dropbtn:focus {
+    background-color: #b94b29;
+    }  
+.dropdown a:hover {background-color: #ddd;} 
+/*end menu bar*/
+/*body */
+.backBtn{
+    background-color: #333;
+    color: rgb(250, 246, 246);
+    padding: 20px, 20px, 20px, 20px;
+    margin-left: 530px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.backBtn:hover, .backBtn:focus {
+    background-color: #b94b29;
+    }  
+
+.axis path,.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+    }
+
+.bar {
+    fill: orange;
+}
+
+.bar:hover {
+    fill: orangered ;
+}
+
+.x.axis path {
+    display: none;
+}
+
+.d3-tip {
+    line-height: 1;
+    font-weight: bold;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 2px;
+    }
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+    box-sizing: border-box;
+    display: inline;
+    font-size: 10px;
+    width: 100%;
+    line-height: 1;
+    color: rgba(0, 0, 0, 0.8);
+    content: "\25BC";
+    position: absolute;
+    text-align: center;
+    }
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+    margin: -1px 0 0 0;
+    top: 100%;
+    left: 0;
+    }
+/*end body*/
+.svg{
+    height: 1800px;
+    margin-top: 8px;
+}
+
+
+/*details page config*/
+.axis path, line{
+    stroke:black;
+}
+.timeseries path{
+    stroke-width:3px;
+}
+.timeseries circle{
+    stroke: white;
+}
+.timeseries text{
+    fill: white;
+    stroke: none;
+    font-size:12px;
+    font-weight: bold;
+}
+.line {
+    float:left;
+}
+.line_container{
+    width: 150px;
+    height: 20px;
+}
+path{
+    fill: none;
+}
+.key{
+    
+    float:right;
+}
+.key_line{
+    font-size:17px;
+    width:100%;
+}
+.key_square{
+    height:10px;
+    width:10px;
+    outline:solid 1px black;
+    float:left;
+    margin-right:10px;
+    margin-top:6px;
+    margin-left:10px;
+}
+#timeseries{
+    padding: 20px 0px 0px 20px; /* top, right , bottom, left*/
+    float:left;
+}
+#mouldChange{
+    padding: 50px 0px 0px 20px; /* top, right , bottom, left*/
+    float:left;
+}
+
+#key{
+    position: absolute;
+    margin-top: 50px;
+    margin-left: 1200px;
+    padding: 20px 0px 0px 0px;
+    
+}
+.node{
+    position: absolute;
+    text-align: left;
+    margin-left: -130px;
+    margin-top: 60px;
+}
+#selectTimeBtn{
+    position: absolute;
+    height:20px;
+    margin-left: -200px;
+    margin-top: 540px;
+}
+
+
+
+.axis text {
+    font: 10px sans-serif;
+    }
+
+.axis path,.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+    }
+
+.bar {
+    fill: steelblue;
+    fill-opacity: .9;
+    }
+
+.x.axis path {
+    display: none;
+    }
+
+label {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    }
