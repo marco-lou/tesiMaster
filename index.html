@@ -90,7 +90,7 @@
     
     
     
-    var nomeDataset="/Simulation_2023-03-03_12-51-45/";
+    var nomeDataset="./Simulation_2023-03-03_12-51-45/";
     
     //create data for each scenarios
     d3.json(nomeDataset, function(error, newroot) {
@@ -122,7 +122,7 @@
         
         for(let i= 1; i<= scenarios; i++){
 
-                var finalOrchestrator = "/Simulation_2023-03-03_12-51-45/scenario_"+i+"/finalOrchestrator.json"
+                var finalOrchestrator = "./Simulation_2023-03-03_12-51-45/scenario_"+i+"/finalOrchestrator.json"
                 //console.log ( "scenario_"+i+": \n")
                 var promise =d3.json(finalOrchestrator,function(data) {
                     var simulationCount = 0;
@@ -238,12 +238,12 @@
             
             for(let j = 1; j<=10; j++ ){ 
                     //gira per [2,2,2,2,2,2] a seconda di prodotti in tutti i scenari
-                    var finalRep = "/Simulation_2023-03-03_12-51-45/scenario_"+i+"/Simulation_"+j+"/finalReport_"+j+".json"
+                    var finalRep = "./Simulation_2023-03-03_12-51-45/scenario_"+i+"/Simulation_"+j+"/finalReport_"+j+".json"
                     await loadTime(finalRep, i-1 , j);
 
                     for ( let z = 0 ; z < sceneProdCountArray[j-1]; z++){
 
-                        var csvFile = "/Simulation_2023-03-03_12-51-45/scenario_"+i+"/Simulation_"+j+"/"+dataArray[i-1].details[z].line_name+"_"+j+".csv"
+                        var csvFile = "./Simulation_2023-03-03_12-51-45/scenario_"+i+"/Simulation_"+j+"/"+dataArray[i-1].details[z].line_name+"_"+j+".csv"
                         // console.log("files:")
                         // counts+=1
                         promises.push(readCsvFile(csvFile,i ,z));
@@ -1250,7 +1250,7 @@
 
                 var model = dataArray[sceneDataToLoad].details[j].line_name
                 
-                const zipFilePath = "/Simulation_2023-03-03_12-51-45/scenario_"+(sceneDataToLoad+1)+"/Simulation_1/"+model+"_1.bpmn.csv.gz";
+                const zipFilePath = "./Simulation_2023-03-03_12-51-45/scenario_"+(sceneDataToLoad+1)+"/Simulation_1/"+model+"_1.bpmn.csv.gz";
 
                 console.log("product to load :"+zipFilePath)
                 const promise = fetch(zipFilePath)
@@ -1653,7 +1653,7 @@
         
          
         var GY = d3.select("#timeseries").append("svg")
-            .attr("width", 40)
+            .attr("width", 50)
             .attr("height", container_dimensions.height)
             .attr("transform", "translate(-100," + 55+ ")")
             .call(zoom)
@@ -1662,7 +1662,7 @@
         var gY = GY.append("g")
                 .attr("id", "y_axis")
                 .attr("height", 600)
-                .attr("transform", "translate(35," + 35+ ")")
+                .attr("transform", "translate(45," + 35+ ")")
                 .call(count_axis);
       
 
@@ -2114,7 +2114,7 @@
                 .attr("x2", time_scale(time))
                 .attr("y2", 500 - zoomY )
                 .style("stroke-dasharray", ("5, 10")) 
-                .style("stroke","red");     
+                .style("stroke","red");
     }
 
     function add_label(circle, d){
@@ -2138,7 +2138,7 @@
                 .style('opacity',1)        
     }
    
-    
+    var yAxisPosition
     function draw_month_timeseries(data, id){ // id pressed , data = filtered data
         //console.log("draw data: " + data)
         //sblocca select all checkBox
@@ -2199,6 +2199,30 @@
                 console.log("id:" )
                 console.log(id)
                 draw_noncontinuesLine(d.time, d.count , id+"_nonContinues")
+
+                if(scale == 1){
+                    yAxisPosition = d3.select("#y_axis")
+                        .append('text')
+                        .text(d.count)
+                        .attr("id" , d.id + "Y")
+                        .attr('x', -28 )
+                        .attr('y', function(){ 
+                                return quantity(d.count ) + zoomY
+                            })   
+                        .attr("fill","green")
+
+                    d3.select('#x_axis')
+                        .append('text')
+                        .text( new Date(d.time).toLocaleDateString())
+                        .attr('id', id+"X")
+                        .attr('x',function(){ 
+                            console.log("scale: " + scale)
+                                return time_scale(d.time ) + zoomX
+                        })
+                        .attr('y',35)
+                        .attr("fill","green")
+                }
+                    
             })
             .on('mouseout', function(d,i){
                 if(!d.final){
@@ -2208,6 +2232,14 @@
                 }else{
                         d3.select(this).transition().attr('r', 12)
                 }
+                d3.select("#y_axis")
+                    .selectAll("#"+d.id+"Y")
+                    .remove()
+
+                d3.select("#x_axis")
+                    .selectAll("#"+id+"X")
+                    .remove()
+                    
                 remove_noncontinuesLine(d.time, d.count  , id+"_nonContinues")
             })
         /*
