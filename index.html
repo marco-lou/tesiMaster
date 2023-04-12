@@ -83,7 +83,7 @@
 
     /////////////////////////
     
-    var scenarios = 1
+    var scenarios = 0
     
     var dataArray =[]
     var countScene= 0
@@ -95,8 +95,9 @@
     //create data for each scenarios
     d3.json(nomeDataset, function(error, newroot) {
         //console.log("newroot: " + newroot)
+        for(i in newroot)
+            scenarios+=1
         
-        scenarios = newroot.length
         for(var i = 1 ; i<= scenarios; i++){
             //{scenario:"scene_1", timerank: "2", timeNeed: 6 , totalCost: 20, mouldChange: 3, 
             // itemId: "1", bar_name: "scene_1"}
