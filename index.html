@@ -82,8 +82,10 @@
     
     
     
+    var nomeDataset="https://github.com/marco-lou/tesiMaster/tree/main/Simulation_2023-03-03_12-51-45";
+    
     //create data for each scenarios
-    d3.json("./main/Simulation_2023-03-03_12-51-45/", function(error, newroot) {
+    d3.json(nomeDataset, function(error, newroot) {
         //console.log("newroot: " + newroot)
         for(i in newroot)
             scenarios+=1
