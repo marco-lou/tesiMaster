@@ -775,7 +775,7 @@
 
         x.domain(data.map(function(d) { return d.bar_name; 
             console.log(d.bar_name)}));
-        y.domain([10000, d3.max(data, function(d) { return d.totalCost +1000; })]);
+        y.domain([d3.min(data, function(d) { return d.totalCost ; })-0.01, d3.max(data, function(d) { return d.totalCost ; }) +0.01]);
 
         g.append("g") //create a new g
             .attr("class", "x axis")
