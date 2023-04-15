@@ -82,27 +82,27 @@
     
     
     
-    var nomeDataset="./tree/main/Simulation_2023-03-03_12-51-45/";
+    // var nomeDataset="./tree/main/Simulation_2023-03-03_12-51-45/";
     
-    //create data for each scenarios
-    d3.json(nomeDataset, function(error, newroot) {
-        //console.log("newroot: " + newroot)
-        for(i in newroot)
-            scenarios+=1
+    // //create data for each scenarios
+    // d3.json(nomeDataset, function(error, newroot) {
+    //     //console.log("newroot: " + newroot)
+    //     for(i in newroot)
+    //         scenarios+=1
         
-        for(var i = 1 ; i<= scenarios; i++){
-            //{scenario:"scene_1", timerank: "2", timeNeed: 6 , totalCost: 20, mouldChange: 3, 
-            // itemId: "1", bar_name: "scene_1"}
+    //     for(var i = 1 ; i<= scenarios; i++){
+    //         //{scenario:"scene_1", timerank: "2", timeNeed: 6 , totalCost: 20, mouldChange: 3, 
+    //         // itemId: "1", bar_name: "scene_1"}
                 
-            dataArray.push({"scenario": "scene_"+i, timerank: 0, "timeNeed": 0, costRank: 0 ,totalCost: 0,
-                            mouldChangeRank: 0,  mouldChange: 0, mouldChanges: [], itemId: i, bar_name: "scene_"+i, details: []})
-        }
+    //         dataArray.push({"scenario": "scene_"+i, timerank: 0, "timeNeed": 0, costRank: 0 ,totalCost: 0,
+    //                         mouldChangeRank: 0,  mouldChange: 0, mouldChanges: [], itemId: i, bar_name: "scene_"+i, details: []})
+    //     }
 
-        getData()
-        //console.log("data array:")
-        //console.log( dataArray)
-        //console.log("scenarios: " +scenarios)
-    })
+    //     getData()
+    //     //console.log("data array:")
+    //     //console.log( dataArray)
+    //     //console.log("scenarios: " +scenarios)
+    // })
     //get data
     
 
