@@ -10,7 +10,7 @@
     <meta name="descption" content="Blog big data analisys">
     <meta http-equiv="reply-to" content="marcololshine@hotmail.com">
     <script type="text/javascript" src="./libraries/d3.js"></script>
-    <img src="./Simulation_2023-03-03_12-51-45" alt="Simulation">
+    <!--img src="./Simulation_2023-03-03_12-51-45" alt="Simulation"-->
     <!--script src="https://d3js.org/d3.v4.min.js"></script-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js"></script>
     <script src=""></script>
@@ -256,7 +256,6 @@
       
         console.log("lenght: "+ results.length)
         
-            
         for (let i = 0; i < results.length; i++) {
             const result = results[i];
             const index = Math.floor(i / (sceneProdCountArray[proScene] * 10)); // prod of every scene * 10
@@ -346,19 +345,19 @@
 
     }
     
-    async function unzipFiles(zipFilePath, outputFilePath, outputFolder) {
-        JSZipUtils.getBinaryContent(zipFilePath, function(err, data) {
-        if(err) {
-            throw err; // or handle err
-        }
+    // async function unzipFiles(zipFilePath, outputFilePath, outputFolder) {
+    //     JSZipUtils.getBinaryContent(zipFilePath, function(err, data) {
+    //     if(err) {
+    //         throw err; // or handle err
+    //     }
 
-        JSZip.loadAsync(data).then(function () {
-            // ...
-        }).catch(function (err) {
-        console.error('Error loading zip file:', err);
-    });
-    });
-    }
+    //     JSZip.loadAsync(data).then(function () {
+    //         // ...
+    //     }).catch(function (err) {
+    //     console.error('Error loading zip file:', err);
+    // });
+    // });
+    // }
     function readCsvFile(csvFile ,scenario, prodotto) {
         return new Promise((resolve, reject) => {
             var reader = new FileReader();
@@ -732,22 +731,22 @@
             barFlag = !barFlag
             }
         svg = d3.select("#timeseries").append("svg")
-            .attr("class" , "svg") //define height
+            .attr("class" , "svg") //define heightf
             .attr("width", 1415)
             .attr("height", height + margin.top + margin.bottom )
 
         //console.log("init")
         drawAxesLabel("Total Time" , 100, 20 , "homeLabelY")
         drawBarChartTotalTime(dataArray, "totalTime" , margin.top ,  margin.left +100, width-300)
-        drawAxesLabel("Scenario" , 1300, 500, "homeLabelX")
+        drawAxesLabel("Scenario" , 1050, 500, "homeLabelX")
         
         drawAxesLabel("Total Cost" , 100, 580, "homeLabelY")
         drawBarChartCost(dataArray, "totalCost", margin.top * 12, margin.left+100 , width -300)
-        drawAxesLabel("Scenario" , 1300, 1050, "homeLabelX")
+        drawAxesLabel("Scenario" , 1050, 1050, "homeLabelX")
 
         drawAxesLabel("Mould Changes" , 100, 1160, "homeLabelY")
         drawBarChartMould(dataArray, "mouldChange", margin.top * 24 , margin.left+100, width -300)  
-        drawAxesLabel("Scenario" , 1300, 1650, "homeLabelX")
+        drawAxesLabel("Scenario" , 1050, 1650, "homeLabelX")
     }
 
     var sceneDataToLoad ;
@@ -945,7 +944,7 @@
             .on('mouseout', function(d){
                 d3.select(this).attr("fill", function(d){
                     if(d.timerank == "1"){
-                        return "#F3CDCD"
+                        return '#F3CDCD'
                     }else if (d.timerank == "2"){
                         return '#AFF1AD'
                     }else if( d.timerank == "3"){
@@ -1119,7 +1118,10 @@
             drawBarChartTotalTime(dataArray, "totalTime", margin.top , margin.left * 12, width /2)
             drawBarChartCost(dataArray, "totalCost" ,  margin.top * 12, margin.left * 12 , width /2 )
             drawBarChartMould( dataArray, "mouldChange" ,  margin.top * 24 , margin.left * 12, width /2)
-    
+
+            d3.selectAll("#homeLabelX")
+                .attr("x", 1300)
+
             drawTop3(top3Array[0].bar_name,'#F3CDCD', top3Array[0] ,margin.top, margin.left,width /2)
             drawTop3(top3Array[1].bar_name, '#AFF1AD', top3Array[1],margin.top *12, margin.left,width /2)
             drawTop3(top3Array[2].bar_name, '#9DF7F1',top3Array[2],margin.top *24, margin.left,width /2)
@@ -1229,11 +1231,21 @@
     var x=d3.scaleLinear()
 		.range([0,100]);
 
-    var data=[];
+    var data = []
 
     function getDetailsData(){
         sceneDataToLoad = parseInt(sceneDataToLoad)
         console.log("scenedataToLoad " + sceneDataToLoad)
+        monthModels = []; 
+        dayModels = []; 
+        yearModels = []; 
+        modelsName = [];
+        monthsData = [];
+        daysData=[];
+        yearsData=[];
+        baseData = []
+        contModels = 0
+        removedCheckBox = []
         
         return new Promise((resolve, rejects)=>{
             
@@ -1417,7 +1429,7 @@
                     })
                 .catch(error => console.error(error));
                 promises.push(promise);
-                
+                checkingBox =baseData.length
         }
         resolve()
         Promise.all(promises)
@@ -1510,7 +1522,7 @@
         })
         
     }
-
+    var backFlag = false
 
     function drawDetailsPage() {
         
@@ -1533,16 +1545,19 @@
             .attr("class" , "backBtn")
             .text("back")
             .on("click", function(){
+                //location.reload(true);
                 d3.select(".menu").select("ul").selectAll("li").remove()
                 d3.select("#key").remove()
                 d3.select("#selectTimeBtn").remove()
                 d3.select("#mouldChange").remove()
                 d3.select("#timeseries").select(".node").remove()
                 d3.select("#timeseries").selectAll("svg").remove()
-
+            
                 daysDataFlag = false
                 monthsDataFlag = true
                 yearsDataFlag = false
+                
+                backFlag = true
 
                 top3Flag=false;
                 return drawHome();
@@ -1871,6 +1886,9 @@
             function(){ // add lines chart
                 //take data to add or to remove -> [{line_id: ....}]  
                 var j;
+                if(checkingBox === baseData.length){
+                    removedCheckBox = []
+                }
                 if(this.id!== "CheckBox_Line_All"){
                     const currentId = this.id.slice(9)
                     console.log("current id: " +currentId)
@@ -1881,7 +1899,7 @@
                     for(i of toAddRemove)
                         console.log("cosa ho : " + i.line_id)
                 }else{
-                    checkingBox =baseData.length
+                    checkingBox = baseData.length
                 }
                 
                 if(this.checked){
@@ -1889,7 +1907,7 @@
                     console.log("removedBox: " + removedCheckBox) 
 
                     if(this.id !== "CheckBox_Line_All"){  //not case CheckBox_Line_All
-                        
+                        setTimeout("",2000)
                         //last checkbox uncheck
                         if(checkingBox === 1){
                             const lastBoxId = idChecked[0]
@@ -1910,14 +1928,14 @@
                             }
                         }
                         
-                       
-                       
+                        console.log("removed: ")
+                        console.log(removedCheckBox)
                         get_timeseries_data(toAddRemove[0]) 
                         idChecked.push(this.id)
                         
-                        checkingBox++
-                        console.log("checking count: " + checkingBox)
-
+                        checkingBox +=1
+                        console.log("checking count add: " )
+                        console.log(checkingBox)
                         //make true CheckBox_Line_All when all is checked
                         if(checkingBox == baseData.length){
                             d3.select('#CheckBox_Line_All').property("checked", true)
@@ -1925,7 +1943,7 @@
                         }
                         setTimeout("",500)
                     }else{ //blocca CheckBox_Line_All
-                        
+                        idChecked =[]
                         for( i of baseData){
                             //reset isChecked flag
                             idChecked.push("CheckBox_"+ i.line_id)
@@ -1939,6 +1957,8 @@
                         
                         checkingBox =baseData.length
                         console.log("here: " + checkingBox)
+                        console.log("removed: " )
+                        console.log(removedCheckBox)
                     }
                     
                 }else{// remove
@@ -1955,10 +1975,11 @@
                         get_timeseries_data(toAddRemove[0])
                         const index = idChecked.indexOf(this.id)
                         idChecked.splice(index, 1); //elimina elemento
-                        checkingBox++
+                        checkingBox -= 1
                         
-
-                        console.log('You unchecked the checkbox: '+this.id)
+                        console.log("removed: " )
+                        console.log(removedCheckBox)
+                        console.log('You unchecked the checkbox case > 2 : '+this.id)
                         console.log("count check Box: " +checkingBox)
                     }else{
                         d3.select('#CheckBox_Line_All').property("checked", false)
@@ -1967,9 +1988,13 @@
                         get_timeseries_data(toAddRemove[0])
                         const index = idChecked.indexOf(this.id)
                         idChecked.splice(index, 1);
-                        checkingBox--
-                        console.log("count check Box: " +checkingBox)
+
+                        checkingBox -= 1
+                        console.log("removed: " )
+                        console.log(removedCheckBox)
+                        console.log("count check Box case = 1: " +checkingBox)
                         const lastBoxId = idChecked[0]
+
                         console.log("last : " +lastBoxId)
                         d3.selectAll('#'+lastBoxId).property("disabled",true);
                     }
